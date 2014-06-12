@@ -1,3 +1,4 @@
+require 'sparql_quick'
 class SparqlModel
   
   #-------------------------------------------------------------
@@ -8,21 +9,12 @@ class SparqlModel
   MULTI = false
   REQUIRED = true
   
-  #-------------------------------------------------------------
-  #  These two methods need to be defined by child classes
-  #-------------------------------------------------------------
   def initialize
     @prefixes = {}
     @attributes = {}
     @template = nil
     @sparql = nil # SparqlQuick.new( Rails.configuration.sparql_endpoint, @prefixes )
   end
-  
-  def get
-  end
-  
-  
-  
   
   # Create a new image
   # _values { Hash }
@@ -109,9 +101,6 @@ class SparqlModel
   end
   
   
-  
-  
-  
   private
   
   # _uri { RDF::URI, String }
@@ -141,7 +130,7 @@ class SparqlModel
     check = []
     @attributes.each do | key, val |
       if val[3] == REQUIRED
-        to_check.push( key )
+        check.push( key )
       end
     end
     missing = []

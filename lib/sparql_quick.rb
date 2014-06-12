@@ -1,3 +1,4 @@
+require 'sparql/client'
 class SparqlQuick
   
   # _endpoint { String }
@@ -162,7 +163,14 @@ class SparqlQuick
     #  Sort them
     #-------------------------------------------------------------
     ns = ns.sort
-    return ns[ ns.length-1 ]+1
+    #-------------------------------------------------------------
+    #  Get the highest index
+    #-------------------------------------------------------------
+    last = ns[ ns.length-1 ]
+    if last == nil
+      last = 0
+    end
+    return last+1
   end
   
   # Build URIs
@@ -211,9 +219,6 @@ class SparqlQuick
     end
     return RDF::Literal( _val )
   end
-  
-  
-  
   
   
   private

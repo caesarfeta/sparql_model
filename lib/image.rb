@@ -1,3 +1,4 @@
+require 'sparql_model'
 class Image < SparqlModel
   
   # Constructor...

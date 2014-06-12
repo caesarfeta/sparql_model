@@ -3,11 +3,23 @@
 SparqlModel - Create data model classes with a SPARQL-queryable triplestore back-end.
 SparqlQuick - Query a SPARQL endpoint with ease.
 
-* Should work with any SPARQL endpoint
-* Easy to use
+
+
+# Install
+	git clone http://github.com/caesarfeta/sparql_model
+	cd sparql_model
+	gem build sparql_model.gemspec
+	gem install sparql_model-0.0.0.gem
+
+
+
+# Uninstall
+	gem uninstall sparql_model 
+
+
 
 # Create a data model with SparqlModel
-Here's a sample.
+Here's a sample class.
 
 	class Image < SparqlModel
 	  
@@ -116,6 +128,8 @@ I add this little chunk of code in my initialize function so I can run my get fu
 Now you have a data model.
 Let's do something with it.
 
+
+
 # Using your data model
 Get an instance
 
@@ -123,26 +137,33 @@ Get an instance
 
 Create a new record
 
-	img.create({ 
-		:path => "http://localhost/images/photo.jpg", 
-		:keywords => [ "vacation", "2014", "canyon" ], 
-		:x_resolution => 4098,
-		:y_resolution => 2048
-	})
+	img.create({ :path => "http://localhost/images/photo.jpg", :keywords => [ "vacation", "2014", "canyon" ] })
 
 Retrieve values
 
 	img.path
 	img.keywords
 
-Change SINGLE values
+Add or change a SINGLE values
 
-	img.x_resolution = 4096
+	img.x_resolution = "4096"
 
 Add MULTI values
-Delete values
 
-Values are changed on the fly.
+	img.add( :keywords, "arizona" )
+
+Delete a MULTI value
+
+	img.delete( :keywords, "arizona" )
+
+Delete a SINGLE value or all MULTI values
+
+	img.delete( :keywords )
+
+If you're running your code on the test fuseki server, you can see the RDF triples change on the fly.
+http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%3Fp+%3Fo+%7D&output=text&stylesheet=
+
+
 
 # To run the test suite.
 ## Install fuseki SPARQL server
@@ -157,3 +178,14 @@ Values are changed on the fly.
 	./fuseki-server --update --mem --port=8080 /ds &
 	echo $! > fuseki.pid
 
+
+
+# Quickie development environment
+	cd /usr/local/sparql_model/lib
+	irb -I .
+	load 'image.rb'
+
+Make a change?
+
+	exec($0)
+	load "image.rb"
