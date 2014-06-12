@@ -1,6 +1,6 @@
 # SparqlModel & SparqlQuick
 
-SparqlModel - Create data model classes with a SPARQL-queryable triplestore back-end.
+SparqlModel - Create data models with a SPARQL-queryable triplestore back-end.
 SparqlQuick - Query a SPARQL endpoint with ease.
 
 
