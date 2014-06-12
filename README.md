@@ -167,7 +167,7 @@ http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%
 
 # To run the test suite.
 ## Install fuseki SPARQL server
-	cd /usr/local/imgcollect
+	cd /usr/local/sparql_model
 	curl -O http://www.interior-dsgn.com/apache//jena/binaries/jena-fuseki-1.0.1-distribution.tar.gz
 	tar xvzf jena-fuseki-1.0.1-distribution.tar.gz
 	ln -s jena-fuseki-1.0.1 fuseki
@@ -177,6 +177,10 @@ http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%
 	cd fuseki
 	./fuseki-server --update --mem --port=8080 /ds &
 	echo $! > fuseki.pid
+
+## Run the tests
+	cd /usr/local/sparql_model
+	rake
 
 
 
