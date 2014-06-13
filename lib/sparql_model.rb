@@ -10,6 +10,7 @@ class SparqlModel
   REQUIRED = true
   
   def initialize
+    @datatype_map = {}
     @prefixes = {}
     @attributes = {}
     @template = nil
@@ -144,21 +145,59 @@ class SparqlModel
     end
   end
   
+  # Return the right datatype
+  def data_value( _key, _value )
+    cls = type?( _key )
+    if cls == ::String
+      return _value.to_s
+    end
+    if cls == ::Integer
+      return _value.to_i
+    end
+    if cls == ::Fixnum
+      return _value.to_f
+    end
+  end
+  
   # Update an attribute
   # _key { Symbol }
   # _value { Array, String }
   def update( _key, _value )
     urn?()
     attr?( _key )
+    #-------------------------------------------------------------
+    #  Get
+    #-------------------------------------------------------------
     if _value == nil
-      return @sparql.value([ @urn, pred( _key ) ])
+      sval = @sparql.value([ @urn, pred( _key ) ])
+      cls = sval.class
+      #-------------------------------------------------------------
+      #  String
+      #-------------------------------------------------------------
+      if cls == ::String
+        return data_value( _key, sval )
+      end
+      #-------------------------------------------------------------
+      #  Array
+      #-------------------------------------------------------------
+      if cls == ::Array
+        out = []
+        sval.each do | val |
+          out.push( data_value( _key, val ) )
+        end
+        return out
+      end
+      #-------------------------------------------------------------
+      #  Nothing
+      #-------------------------------------------------------------
+      return nil
     end
+    #-------------------------------------------------------------
+    #  Set
+    #-------------------------------------------------------------
     type?( _key )
     type_class?( _key, _value )
     single?( _key )
-    #-------------------------------------------------------------
-    #  Update the value
-    #-------------------------------------------------------------
     @sparql.update([ @urn, pred( _key ), _value ])
   end
   
@@ -173,9 +212,11 @@ class SparqlModel
   # Has an attribute type been specified
   # _key { Symbol }
   def type?( _key )
-    if @attributes[ _key ][1] == nil
+    type = @attributes[ _key ][1]
+    if type == nil
       raise "Type not specified."
     end
+    return type
   end
   
   # Get the triple predicate
@@ -223,6 +264,9 @@ class SparqlModel
     type = @attributes[ _key ][1]
     check = _value.class
     if check != type
+      if type == ::Integer && _value.integer?
+        return
+      end
       raise "Type mismatch: \"#{ check }\" passed but  \"#{ type }\" is needed."
     end
   end

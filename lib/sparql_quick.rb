@@ -251,6 +251,7 @@ class SparqlQuick
 end
 
 class String
+  
   # Clip the first and last characters from a string
   # @return { String }
   def clip

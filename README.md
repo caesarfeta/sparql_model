@@ -145,7 +145,7 @@ Retrieve values
 
 Add or change a SINGLE values
 
-	img.x_resolution = "4096"
+	img.x_resolution = 4096
 
 Add MULTI values
 
