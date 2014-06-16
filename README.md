@@ -138,12 +138,17 @@ Create a new record
 
 	img.create({ :path => "http://localhost/images/photo.jpg", :keywords => [ "vacation", "2014", "canyon" ] })
 
+or get an existing record
+
+	img = Image.new( "http://localhost/images/photo.jpg" )
+	img.get( "http://localhost/images/photo.jpg" )
+
 Retrieve values
 
 	img.path
 	img.keywords
 
-Add or change a SINGLE values
+Add or change a SINGLE value
 
 	img.x_resolution = 4096
 
@@ -159,8 +164,7 @@ Delete a SINGLE value or all MULTI values
 
 	img.delete( :keywords )
 
-If you're running your code on the test fuseki server, you can see the RDF triples change on the fly.
-http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%3Fp+%3Fo+%7D&output=text&stylesheet=
+If you're running your code on the test fuseki server, you can [ see the RDF triples change on the fly.]( http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%3Fp+%3Fo+%7D&output=text&stylesheet= )
 
 
 
