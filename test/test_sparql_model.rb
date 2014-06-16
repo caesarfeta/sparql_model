@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'benchmark'
 require_relative '../lib/image'
 
 class SparqlModelTest < Test::Unit::TestCase
@@ -61,6 +62,9 @@ class SparqlModelTest < Test::Unit::TestCase
       check = true
     end
     assert_equal( true, check )
+  end
+  
+  def test_thousand_creates
   end
   
 end

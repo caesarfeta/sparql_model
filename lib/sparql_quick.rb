@@ -226,6 +226,15 @@ class SparqlQuick
     return RDF::Literal( _val )
   end
   
+  # Empty the entire database
+  # _verify { String }
+  def empty( _verify=nil )
+    keyword = :all
+    if _verify != keyword
+      raise "If you really want to empty the database run empty( :#{ keyword } )"
+    end
+    @update.clear( :all )
+  end
   
   private
   

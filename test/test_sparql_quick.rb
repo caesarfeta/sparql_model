@@ -1,14 +1,55 @@
 require 'test/unit'
+require 'benchmark'
 require_relative '../lib/sparql_quick'
 
 class SparqlQuickTest < Test::Unit::TestCase
   
-  # TODO
-  def test_count
-    prefixes = { :rdf => "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" }
-    sparql = SparqlQuick.new( "http://localhost:8080/ds", prefixes )
-    sparql.count([ :s, "rdf:path", :o ])
-    assert_equal( 1, 1 )
+  def test_empty
+    sparql = SparqlTest.handle
+    sparql.empty( :all )
+    check = sparql.count([ :s, :p, :o ])
+    assert_equal( 0, check )
   end
   
+  def test_empty_safety
+    sparql = SparqlTest.handle
+    begin
+      sparql.empty()
+    rescue
+      assert_equal( true, true )
+    end
+  end
+  
+  def test_insert_thousand_triples
+    sparql = SparqlTest.handle
+    sparql.empty( :all )
+    time = Benchmark.measure do
+      (1..1000).each do |i|
+        sparql.insert([ SparqlTest.urn( __method__ ), 'me:num', i ])
+      end
+    end
+    puts time
+    sparql.empty( :all )
+  end
+  
+  def test_count
+    sparql = SparqlTest.handle
+    (1..100).each do |i|
+      sparql.insert([ SparqlTest.urn( __method__ ), 'me:num', i ])
+    end
+    check = sparql.count([ SparqlTest.urn( __method__ ), 'me:num', :o ])
+    sparql.empty( :all )
+    assert_equal( 100, check )
+  end
+  
+end
+
+class SparqlTest
+  def self.handle
+    prefixes = { :me => "<http://localhost:8080/sparql_model#>" }
+    return SparqlQuick.new( "http://localhost:8080/ds", prefixes )
+  end
+  def self.urn( _name )
+    return "<urn:sparql_quick:test#{ _name }>"
+  end
 end
