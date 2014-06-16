@@ -16,7 +16,7 @@ class Image < SparqlModel
     
     #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
     @attributes = {
-      :path => [ "rdf:path", ::String, SINGLE, REQUIRED ],
+      :path => [ "rdf:path", ::String, SINGLE, REQUIRED, UNIQUE ],
       :keywords => [ "rdf:keywords", ::String, MULTI ],
       :image_descrption => [ "exif:imageDescription",  ::String, SINGLE ],
       :make => [ "exif:make",  ::String, SINGLE ],

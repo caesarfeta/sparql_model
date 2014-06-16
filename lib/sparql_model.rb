@@ -8,6 +8,7 @@ class SparqlModel
   SINGLE = true
   MULTI = false
   REQUIRED = true
+  UNIQUE = true
   
   def initialize
     @datatype_map = {}
@@ -198,6 +199,7 @@ class SparqlModel
     type?( _key )
     type_class?( _key, _value )
     single?( _key )
+    unique?( _key, _value )
     @sparql.update([ @urn, pred( _key ), _value ])
   end
   
@@ -217,6 +219,18 @@ class SparqlModel
       raise "Type not specified."
     end
     return type
+  end
+  
+  # Make sure a key value pair is unique
+  # _key { Symbol }
+  # _value { Array, String }
+  def unique?( _key, _value )
+    if @attributes[ _key ][4] == true
+      count = @sparql.count([ :s, pred( _key ), _value ])
+      if count > 0
+        raise "#{ _key }:#{ _value } pair must be UNIQUE"
+      end
+    end
   end
   
   # Get the triple predicate
@@ -276,6 +290,16 @@ class SparqlModel
   def new_urn
     index = @sparql.next_index([ pred( :path ), :o ], :s )
     return @template.sub( /%/, index.to_s )
+  end
+  
+  # TODO: Destroy all model created data
+  # _yes { String }
+  def kaboom( _yes )
+    if ( _yes == "YES" )
+      @attributes.each do | key, val |
+        puts key
+      end
+    end
   end
     
 end

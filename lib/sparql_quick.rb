@@ -126,6 +126,12 @@ class SparqlQuick
     return out
   end
   
+  # _double { Array }
+  # @return { Fixnum }
+  def count( _triple )
+    return select( _triple ).length
+  end
+  
   # _type { String }
   # @return { SPARQL::Client }
   def handle( _type )
@@ -250,8 +256,9 @@ class SparqlQuick
   
 end
 
+
+
 class String
-  
   # Clip the first and last characters from a string
   # @return { String }
   def clip

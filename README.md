@@ -94,6 +94,7 @@ Let me explain what's in [ Array ].
 * [1] is the data-type of the RDF-triple object value ( :o )
 * [2] some RDF predicates should have only a SINGLE value, others should have MULTI values
 * [3] --Optional-- some values are REQUIRED for a new instance to be created
+* [4] --Optional-- some SINGLE values must be UNIQUE
 
 Define the URN @template for your RDF-triple subject value ( :s ).
 
@@ -171,9 +172,9 @@ If you're running your code on the test fuseki server, you can [ see the RDF tri
 # To run the test suite.
 ## Install fuseki SPARQL server
 	cd /usr/local/sparql_model
-	curl -O http://www.interior-dsgn.com/apache//jena/binaries/jena-fuseki-1.0.1-distribution.tar.gz
-	tar xvzf jena-fuseki-1.0.1-distribution.tar.gz
-	ln -s jena-fuseki-1.0.1 fuseki
+	curl -O http://apache.mesi.com.ar//jena/binaries/jena-fuseki-1.0.2-distribution.tar.gz
+	tar xvzf jena-fuseki-1.0.2-distribution.tar.gz
+	ln -s jena-fuseki-1.0.2 fuseki
 	chmod +x fuseki/fuseki-server fuseki/s-**
 
 ## Start the fuseki server on port 8080
