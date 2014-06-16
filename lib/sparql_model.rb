@@ -24,6 +24,7 @@ class SparqlModel
     @urn = new_urn()
     required_check( _values )
     change( _values )
+    return
   end
   
   # Change values in mass with a hash
@@ -290,16 +291,6 @@ class SparqlModel
   def new_urn
     index = @sparql.next_index([ pred( :path ), :o ], :s )
     return @template.sub( /%/, index.to_s )
-  end
-  
-  # TODO: Destroy all model created data
-  # _yes { String }
-  def kaboom( _yes )
-    if ( _yes == "YES" )
-      @attributes.each do | key, val |
-        puts key
-      end
-    end
   end
     
 end

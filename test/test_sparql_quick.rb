@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'sparql_test'
 require 'benchmark'
 require_relative '../lib/sparql_quick'
 
@@ -42,14 +43,4 @@ class SparqlQuickTest < Test::Unit::TestCase
     assert_equal( 100, check )
   end
   
-end
-
-class SparqlTest
-  def self.handle
-    prefixes = { :me => "<http://localhost:8080/sparql_model#>" }
-    return SparqlQuick.new( "http://localhost:8080/ds", prefixes )
-  end
-  def self.urn( _name )
-    return "<urn:sparql_quick:test#{ _name }>"
-  end
 end
