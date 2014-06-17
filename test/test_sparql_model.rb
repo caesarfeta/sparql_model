@@ -18,12 +18,25 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( 'check', img.path )
   end
   
-  def test_instance
+  def test_inst
     SparqlTest.empty()
     img = Image.new
     img.create({ :path => 'check' })
     img.inst(1)
     assert_equal( '<urn:sparql_model:image.1>', img.urn )
+  end
+  
+  def test_inst_error
+    SparqlTest.empty()
+    img = Image.new
+    img.create({ :path => 'check' })
+    check = false
+    begin
+      img.inst(2)
+    rescue
+      check = true
+    end
+    assert_equal( true, check )
   end
   
   def test_new_get

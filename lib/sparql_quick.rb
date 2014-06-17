@@ -236,6 +236,7 @@ class SparqlQuick
     @update.clear( :all )
   end
   
+  
   private
   
   # _double { Array }

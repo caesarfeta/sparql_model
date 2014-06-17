@@ -143,6 +143,7 @@ or get an existing record
 
 	img = Image.new( "http://localhost/images/photo.jpg" )
 	img.get( "http://localhost/images/photo.jpg" )
+	img.inst(1)
 
 Retrieve values
 
