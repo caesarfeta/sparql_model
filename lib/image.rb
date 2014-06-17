@@ -57,6 +57,7 @@ class Image < SparqlModel
       :image_unique_id => [ "exif:imageUniqueId", ::String, SINGLE ]
     }
     
+    @model = "<urn:imgcollect:img>"
     @template = "<urn:imgcollect:img.%>"
     @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
     

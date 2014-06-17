@@ -7,13 +7,22 @@ class SparqlModel
   #-------------------------------------------------------------
   SINGLE = true
   MULTI = false
+  
   REQUIRED = true
+  OPTIONAL = false
+  
   UNIQUE = true
+  
+  #-------------------------------------------------------------
+  #  Used to mark instances
+  #-------------------------------------------------------------
+  SPAWN = "<http://localhost/sparql_model#spawn>"
   
   def initialize
     @datatype_map = {}
     @prefixes = {}
     @attributes = {}
+    @model = nil
     @template = nil
     @sparql = nil # SparqlQuick.new( Rails.configuration.sparql_endpoint, @prefixes )
   end
@@ -24,6 +33,10 @@ class SparqlModel
     @urn = new_urn()
     required_check( _values )
     change( _values )
+    #-------------------------------------------------------------
+    #  Mark an instance
+    #-------------------------------------------------------------
+    @sparql.insert([ @model, SPAWN, @urn ])
     return
   end
   
