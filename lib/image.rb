@@ -6,18 +6,14 @@ class Image < SparqlModel
   def initialize( _url=nil )
     
     @prefixes = {
-      :hmt => "<http://www.homermultitext.org/hmt/rdf/>", 
-      :cite => "<http://www.homermultitext.org/cite/rdf/>",
-      :rdf => "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-      :crm => "<http://www.cidoc-crm.org/cidoc-crm/>",
-      :dc => "<http://dublincore.org/documents/dces/>",
-      :exif => "<http://www.kanzaki.com/ns/exif#>"
+      :exif => "<http://www.kanzaki.com/ns/exif#>",
+      :this => "<http://localhost/sparql_model/image#>"
     }
     
     #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
     @attributes = {
-      :path => [ "rdf:path", ::String, SINGLE, REQUIRED, UNIQUE ],
-      :keywords => [ "rdf:keywords", ::String, MULTI ],
+      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE ],
+      :keywords => [ "this:keywords", ::String, MULTI ],
       :image_descrption => [ "exif:imageDescription",  ::String, SINGLE ],
       :make => [ "exif:make",  ::String, SINGLE ],
       :model => [ "exif:model", ::String, SINGLE ],
@@ -57,8 +53,8 @@ class Image < SparqlModel
       :image_unique_id => [ "exif:imageUniqueId", ::String, SINGLE ]
     }
     
-    @model = "<urn:imgcollect:img>"
-    @template = "<urn:imgcollect:img.%>"
+    @model = "<urn:sparql_model:image>"
+    @template = "<urn:sparql_model:image.%>"
     @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
     
     #-------------------------------------------------------------

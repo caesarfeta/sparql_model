@@ -23,7 +23,7 @@ class SparqlModelTest < Test::Unit::TestCase
     img = Image.new
     img.create({ :path => 'check' })
     img.inst(1)
-    assert_equal( '<urn:imgcollect:img.1>', img.urn )
+    assert_equal( '<urn:sparql_model:image.1>', img.urn )
   end
   
   def test_new_get

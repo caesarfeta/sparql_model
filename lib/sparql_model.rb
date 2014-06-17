@@ -7,10 +7,10 @@ class SparqlModel
   #-------------------------------------------------------------
   SINGLE = true
   MULTI = false
-  
+  #
   REQUIRED = true
   OPTIONAL = false
-  
+  #
   UNIQUE = true
   
   #-------------------------------------------------------------
@@ -333,7 +333,7 @@ class SparqlModel
   # Get a new URN
   # @return { String }
   def new_urn
-    index = @sparql.next_index([ pred( :path ), :o ], :s )
+    index = @sparql.next_index([ @model, SPAWN ])
     return to_urn( index )
   end
   

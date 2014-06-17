@@ -13,7 +13,7 @@
 
 
 # Uninstall
-	gem uninstall sparql_model 
+	gem uninstall sparql_model
 
 
 
