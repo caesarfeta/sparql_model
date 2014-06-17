@@ -97,7 +97,7 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( true, check )
   end
   
-  def test_thousand_instances
+  def test_thousand_creates
     SparqlTest.empty()
     img = Image.new
     time = Benchmark.measure do

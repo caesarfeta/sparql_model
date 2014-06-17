@@ -90,6 +90,19 @@ class SparqlModel
     return results
   end
   
+  # _config { String }
+  # @return { Hash, Array }
+  def list( _config=nil )
+    if _full.upcase == 'CONFIG'
+      return @attributes
+    end
+    list = []
+    @attributes.each do | _key, _val |
+      list.push( _key )
+    end
+    return list.sort()
+  end
+  
   # ActiveRecord style trickery
   def method_missing( _key, *_value )
     #-------------------------------------------------------------
