@@ -18,6 +18,14 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( 'check', img.path )
   end
   
+  def test_instance
+    SparqlTest.empty()
+    img = Image.new
+    img.create({ :path => 'check' })
+    img.inst(1)
+    assert_equal( '<urn:imgcollect:img.1>', img.urn )
+  end
+  
   def test_new_get
     #-------------------------------------------------------------
     #  Empty the triplestore

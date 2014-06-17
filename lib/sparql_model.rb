@@ -18,13 +18,19 @@ class SparqlModel
     @sparql = nil # SparqlQuick.new( Rails.configuration.sparql_endpoint, @prefixes )
   end
   
-  # Create a new image
+  # Create a new instance
   # _values { Hash }
   def create( _values )
     @urn = new_urn()
     required_check( _values )
     change( _values )
     return
+  end
+  
+  # Return the urn
+  # @return { String }
+  def urn
+    return @urn
   end
   
   # Change values in mass with a hash
@@ -101,6 +107,18 @@ class SparqlModel
       list.push( _key )
     end
     return list.sort()
+  end
+  
+  # Get instance by id
+  # _id { Integer }
+  def inst( _id )
+    urn = to_urn( _id )
+    count = @sparql.count([ urn, :p, :o ])
+    if count > 0
+      @urn = urn
+      return
+    end
+    raise "Instance #{ urn } could not be found."
   end
   
   # ActiveRecord style trickery
@@ -303,7 +321,13 @@ class SparqlModel
   # @return { String }
   def new_urn
     index = @sparql.next_index([ pred( :path ), :o ], :s )
-    return @template.sub( /%/, index.to_s )
+    return to_urn( index )
   end
-    
+  
+  # Turn an index to a new URN
+  # _i { Integer }
+  # @return { String }
+  def to_urn( _i )
+    return @template.sub( /%/, _i.to_s )
+  end
 end
