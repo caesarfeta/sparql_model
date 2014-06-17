@@ -27,18 +27,19 @@ Here's a sample class.
 	  def initialize( _url=nil )
 	    
 	    @prefixes = {
-	      :rdf => "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-	      :exif => "<http://www.kanzaki.com/ns/exif#>"
+	    :exif => "<http://www.kanzaki.com/ns/exif#>",
+	      :this => "<http://localhost/sparql_model/image#>"
 	    }
 	    
 	    #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
 	    @attributes = {
-	      :path => [ "rdf:path", ::String, SINGLE, REQUIRED ],
-	      :keywords => [ "rdf:keywords", ::String, MULTI ],
+	      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE ],
+	      :keywords => [ "this:keywords", ::String, MULTI ],
 	      :x_resolution => [ "exif:xResolution", ::String, SINGLE ],
 	      :y_resolution => [ "exif:yResolution", ::String, SINGLE ]
 	    }
 	    
+	    @model = "<urn:image>"
 	    @template = "<urn:image.%>"
 	    @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
 	    
@@ -95,6 +96,10 @@ Let me explain what's in [ Array ].
 * [2] some RDF predicates should have only a SINGLE value, others should have MULTI values
 * [3] --Optional-- some values are REQUIRED for a new instance to be created
 * [4] --Optional-- some SINGLE values must be UNIQUE
+
+Define the @model name
+
+	@model = "<urn:image>"
 
 Define the URN @template for your RDF-triple subject value ( :s ).
 
