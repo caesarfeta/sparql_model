@@ -28,7 +28,6 @@ class SparqlModel
     @prefixes = {}
     @attributes = {}
     @model = nil
-    @template = nil
     @sparql = nil # SparqlQuick.new( Rails.configuration.sparql_endpoint, @prefixes )
   end
   
@@ -151,9 +150,6 @@ class SparqlModel
     value = _value[0]
     update( key, value )
   end
-  
-  
-  private
   
   # _uri { RDF::URI, String }
   def uri_to_attr( _uri )
@@ -346,6 +342,6 @@ class SparqlModel
   # _i { Integer }
   # @return { String }
   def to_urn( _i )
-    @template.sub( /%/, _i.to_s )
+    @model.clone.insert( -2, ".#{ _i }" )
   end
 end

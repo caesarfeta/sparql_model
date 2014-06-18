@@ -18,7 +18,6 @@ class Collection < SparqlModel
     }
     
     @model = "<urn:sparql_model:collection>"
-    @template = "<urn:sparql_model:collection.%>"
     @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
     
     #-------------------------------------------------------------

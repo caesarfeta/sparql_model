@@ -40,7 +40,6 @@ Here's a sample class.
 	    }
 	    
 	    @model = "<urn:image>"
-	    @template = "<urn:image.%>"
 	    @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
 	    
 	    #-------------------------------------------------------------
@@ -101,9 +100,10 @@ Define the @model name
 
 	@model = "<urn:image>"
 
-Define the URN @template for your RDF-triple subject value ( :s ).
+@model becomes the template for each instances RDF-triple subject value ( :s ).
 
-	@template = "<urn:image.%>"
+	<urn:image.1>
+	<urn:image.2>
 
 The % sign will be replaced by an integer id value, &lt;urn:image.1&gt;, &lt;urn:image.2&gt;, etc., everytime a new instance of your model is created.
 

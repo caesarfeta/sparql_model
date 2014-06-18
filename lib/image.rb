@@ -54,7 +54,6 @@ class Image < SparqlModel
     }
     
     @model = "<urn:sparql_model:image>"
-    @template = "<urn:sparql_model:image.%>"
     @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
     
     #-------------------------------------------------------------

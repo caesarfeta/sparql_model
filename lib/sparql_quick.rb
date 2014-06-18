@@ -164,7 +164,7 @@ class SparqlQuick
     ns.max + 1
   end
   
-  # Take a URN and return just the index
+  # Take a URN and return just the index if it exists
   # _urn { RDF::URI }
   # @return { Integer }
   def urn_index( _urn )
@@ -226,9 +226,6 @@ class SparqlQuick
     end
     @update.clear( :all )
   end
-  
-  
-  private
   
   # _double { Array }
   # @return { Array }
