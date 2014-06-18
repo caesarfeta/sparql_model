@@ -118,15 +118,33 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( true, check )
   end
   
-  def test_thousand_creates
+#  def test_thousand_creates
+#    SparqlTest.empty()
+#    img = Image.new
+#    time = Benchmark.measure do
+#      (1..1000).each do |i|
+#        img.create({ :path => "path#{i}" })
+#      end
+#    end
+#    puts time
+#  end
+  
+  def test_indices
     SparqlTest.empty()
     img = Image.new
-    time = Benchmark.measure do
-      (1..1000).each do |i|
-        img.create({ :path => 'path'+i.to_s })
-      end
+    (1..100).each do |i|
+      img.create({ :path => "path#{i}" })
     end
-    puts time
+    assert_equal( 100, img.total )
+  end
+  
+  def test_total
+    SparqlTest.empty()
+    img = Image.new
+    (1..100).each do |i|
+      img.create({ :path => "path#{i}" })
+    end
+    assert_equal( ::Integer, img.total.class.superclass )
   end
   
 end

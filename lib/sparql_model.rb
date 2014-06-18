@@ -2,15 +2,20 @@ require 'sparql_quick'
 class SparqlModel
   
   #-------------------------------------------------------------
+  #  Getters
+  #-------------------------------------------------------------
+  attr_reader :urn
+  
+  #-------------------------------------------------------------
   #  Configuration constants are more readable than contextless
   #  true & false values
   #-------------------------------------------------------------
   SINGLE = true
   MULTI = false
-  #
+  
   REQUIRED = true
   OPTIONAL = false
-  #
+  
   UNIQUE = true
   
   #-------------------------------------------------------------
@@ -37,12 +42,6 @@ class SparqlModel
     #  Mark an instance
     #-------------------------------------------------------------
     @sparql.insert([ @model, SPAWN, @urn ])
-    return
-  end
-  
-  # Return the urn
-  # @return { String }
-  def urn
     return @urn
   end
   
@@ -73,7 +72,7 @@ class SparqlModel
     urn?()
     key = _key.to_sym
     attr?( key )
-    type?( key )
+    attr_type( key )
     type_class?( key, _value )
     multi?( key )
     @sparql.insert([ @urn, pred( key ), _value ])
@@ -94,7 +93,7 @@ class SparqlModel
   end
   
   # Get all attributes
-  def all()
+  def all
     urn?()
     values = @sparql.select([ @urn, :p, :o ])
     results = {}
@@ -106,7 +105,7 @@ class SparqlModel
       type = @attributes[ key ][1]
       results[ key ] = value[:o].to_s
     end
-    return results
+    results
   end
   
   # _config { String }
@@ -119,7 +118,13 @@ class SparqlModel
     @attributes.each do | _key, _val |
       list.push( _key )
     end
-    return list.sort()
+    list.sort()
+  end
+  
+  # Get the number of instances
+  # @return { Integer }
+  def total
+    @sparql.count([ @model, SPAWN, :o ])
   end
   
   # Get instance by id
@@ -193,14 +198,14 @@ class SparqlModel
   
   # Return the right datatype
   def data_value( _key, _value )
-    cls = type?( _key )
+    cls = attr_type( _key )
     if cls == ::String
       return _value.to_s
     end
-    if cls == ::Integer
+    if cls == ::Integer || cls == ::Fixnum || cls == ::Bignum
       return _value.to_i
     end
-    if cls == ::Fixnum
+    if cls == ::Float
       return _value.to_f
     end
   end
@@ -241,7 +246,7 @@ class SparqlModel
     #-------------------------------------------------------------
     #  Set
     #-------------------------------------------------------------
-    type?( _key )
+    attr_type( _key )
     type_class?( _key, _value )
     single?( _key )
     unique?( _key, _value )
@@ -258,12 +263,12 @@ class SparqlModel
   
   # Has an attribute type been specified
   # _key { Symbol }
-  def type?( _key )
+  def attr_type( _key )
     type = @attributes[ _key ][1]
     if type == nil
       raise "Type not specified."
     end
-    return type
+    type
   end
   
   # Make sure a key value pair is unique
@@ -314,7 +319,7 @@ class SparqlModel
   
   # _key { Symbol }
   def single_or_multi( _key )
-    return @attributes[ _key ][2]
+    @attributes[ _key ][2]
   end
   
   # _type { Symbol }
@@ -334,13 +339,13 @@ class SparqlModel
   # @return { String }
   def new_urn
     index = @sparql.next_index([ @model, SPAWN ])
-    return to_urn( index )
+    to_urn( index )
   end
   
   # Turn an index to a new URN
   # _i { Integer }
   # @return { String }
   def to_urn( _i )
-    return @template.sub( /%/, _i.to_s )
+    @template.sub( /%/, _i.to_s )
   end
 end

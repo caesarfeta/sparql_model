@@ -21,17 +21,17 @@ class SparqlQuickTest < Test::Unit::TestCase
     end
   end
   
-  def test_insert_thousand_triples
-    sparql = SparqlTest.handle
-    sparql.empty( :all )
-    time = Benchmark.measure do
-      (1..1000).each do |i|
-        sparql.insert([ SparqlTest.urn( __method__ ), 'me:num', i ])
-      end
-    end
-    puts time
-    sparql.empty( :all )
-  end
+#  def test_insert_thousand_triples
+#    sparql = SparqlTest.handle
+#    sparql.empty( :all )
+#    time = Benchmark.measure do
+#      (1..1000).each do |i|
+#        sparql.insert([ SparqlTest.urn( __method__ ), 'me:num', i ])
+#      end
+#    end
+#    puts time
+#    sparql.empty( :all )
+#  end
   
   def test_count
     sparql = SparqlTest.handle

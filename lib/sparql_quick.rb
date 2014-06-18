@@ -96,7 +96,7 @@ class SparqlQuick
     query.each_solution.each do | val |
       results.push( val.bindings )
     end
-    return results
+    results
   end
   
   # _double { Array }
@@ -129,54 +129,46 @@ class SparqlQuick
   # _double { Array }
   # @return { Fixnum }
   def count( _triple )
-    return select( _triple ).length
+    select( _triple ).length
   end
   
   # _type { String }
   # @return { SPARQL::Client }
   def handle( _type )
-    return SPARQL::Client.new( File.join( @endpoint, _type ) )
+    SPARQL::Client.new( File.join( @endpoint, _type ) )
+  end
+  
+  # _double { Array }
+  # _side { Symbol }
+  def indexed_urns( _double, _side )
+    case _side
+      when :o then get_objects( _double )
+      when :s then get_subjects( _double )
+    end
   end
 
   # Get the next index
   # _double { Array }
   # _side { Symbol }
-  # @return { Fixnum }
+  # @return { Integer }
   def next_index( _double, _side=:o )
     #-------------------------------------------------------------
     #  Where's the indexed URNs?
     #-------------------------------------------------------------
-    results = nil
-    case _side
-    when :o
-      results = get_objects( _double )
-    when :s
-      results = get_subjects( _double )
-    end
-    if results == nil
-      raise "Indexed URNs not found"
-    end
-    #-------------------------------------------------------------
-    #  Get the indices
-    #-------------------------------------------------------------
+    results = indexed_urns( _double, _side )
+    return 1 if results.empty?
     ns = []
     results.each do | val |
-      string = val[ _side ].to_s
-      n = string[-1,1]
-      ns.push( n.to_i )
+      ns.push( urn_index( val[ _side ] ) )
     end
-    #-------------------------------------------------------------
-    #  Sort them
-    #-------------------------------------------------------------
-    ns = ns.sort
-    #-------------------------------------------------------------
-    #  Get the highest index
-    #-------------------------------------------------------------
-    last = ns[ ns.length-1 ]
-    if last == nil
-      last = 0
-    end
-    return last+1
+    ns.max + 1
+  end
+  
+  # Take a URN and return just the index
+  # _urn { RDF::URI }
+  # @return { Integer }
+  def urn_index( _urn )
+    _urn.to_s.gsub(/\d+$/).next.to_i
   end
   
   # Build URIs
@@ -187,10 +179,9 @@ class SparqlQuick
     _triple.each do | val |
       triple.push( uri( val ) )
     end
-    return triple
+    triple
   end
   
-  # Should this be turned into a URI?
   # _val { String, Symbol, etc... }
   # _return { RDF::URI, RDF::Literal, Symbol }
   def uri( _val )
@@ -215,22 +206,22 @@ class SparqlQuick
       #-------------------------------------------------------------
       #  With prefix
       #-------------------------------------------------------------
-      if @prefixes != nil
+      unless @prefixes == nil
         pre, colon, last = _val.rpartition(':')
         pre = pre.to_sym
         if @prefixes.has_key?( pre )
-          return uri( "<"+@prefixes[ pre ].clip+last+">" )
+          return uri( "<#{@prefixes[ pre ].clip}#{last}>" )
         end
       end
     end
-    return RDF::Literal( _val )
+    RDF::Literal( _val )
   end
   
   # Empty the entire database
   # _verify { String }
   def empty( _verify=nil )
     keyword = :all
-    if _verify != keyword
+    unless _verify == keyword
       raise "If you really want to empty the database run empty( :#{ keyword } )"
     end
     @update.clear( :all )
@@ -244,7 +235,7 @@ class SparqlQuick
   def get_objects( _double )
     triple = _double.clone
     triple[2] = :o
-    return select( triple )
+    select( triple )
   end
   
   # _double { Array }
@@ -252,7 +243,7 @@ class SparqlQuick
   def get_subjects( _double )
     triple = _double.clone
     triple.unshift( :s )
-    return select( triple )
+    select( triple )
   end
   
   # Remove a triple for real...
@@ -272,9 +263,6 @@ class String
   # Clip the first and last characters from a string
   # @return { String }
   def clip
-    val = String.new( self )
-    val[0]=''
-    val[-1]=''
-    return val
+    self[1..-2]
   end
 end
