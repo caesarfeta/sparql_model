@@ -2,8 +2,16 @@
 * SparqlModel - Create data models with a SPARQL-queryable triplestore back-end.
 * SparqlQuick - Query a SPARQL endpoint with ease.
 
-SparqlModel should work with any triplestore that implements RDF, and supports the HTTP and SPARQL prototcols.
 
+
+# Requirements
+* Ruby
+* sparql gem
+* Any triplestore that implements RDF, and supports the HTTP and SPARQL prototcols.
+
+
+
+# Pitch
 * Triplestores have become increasingly popular because... 
 	* They scale well
 		* New types of data can be stored without much fuss.
