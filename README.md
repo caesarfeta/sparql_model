@@ -136,6 +136,10 @@ Let's do something with it.
 
 
 # Using your data model
+Load your model class
+
+	load 'image.rb'
+
 Get an instance
 
 	img = Image.new
@@ -171,7 +175,26 @@ Delete a SINGLE value or all MULTI values
 
 	img.delete( :keywords )
 
+Destroy the instance.  Remove any triple where instance is a subject or an object.
+
+	img.destroy()
+
 If you're running your code on the test fuseki server, you can [ see the RDF triples change on the fly.]( http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%3Fp+%3Fo+%7D&output=text&stylesheet= )
+
+
+
+# Using multiple classes together
+Load your model class
+
+	load 'collection.rb'
+
+Create a collection instance
+
+	col = Collection.new
+
+Create a collection
+
+	col.create({ :name => "Collection Test", :images => [ "<urn:sparql_model:image.1>" ] })
 
 
 

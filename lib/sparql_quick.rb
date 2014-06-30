@@ -20,9 +20,7 @@ class SparqlQuick
     #-------------------------------------------------------------
     #  Insert the data
     #-------------------------------------------------------------
-    @update.insert_data( RDF::Graph.new { | graph |
-      graph << triple
-    })
+    @update.insert_data( graph( triple ) )
   end
   
   # Update a single triple
@@ -64,7 +62,6 @@ class SparqlQuick
     # SPARQL::Client.delete_data can only delete a complete
     # s,p,o triple.  So we have to fill in the details.
     #-------------------------------------------------------------
-    puts results
     results.each do | hash |
       toDelete = _triple.clone
       hash.keys.each do | key |
@@ -247,9 +244,16 @@ class SparqlQuick
   # _triple { Array }
   def destroy( _triple )
     triple = uris( _triple )
-    @update.delete_data( RDF::Graph.new { | graph |
-      graph << triple
-    })
+    @update.delete_data( graph( triple ) )
+  end
+  
+  # Build a RDF::Graph triple
+  # _triple { Array }
+  # @return { RDF::Graph }
+  def graph( _triple )
+    RDF::Graph.new { | graph |
+      graph << _triple
+    }
   end
   
 end

@@ -91,6 +91,14 @@ class SparqlModel
     @sparql.delete([ @urn, pred( key ), _value ])
   end
   
+  # Destroy an instance
+  # Remove any triple where instance is a subject or an object.
+  def destroy()
+    urn?()
+    @sparql.destroy([ @urn, :p, :o ])
+    @sparql.destroy([ :s, :p, @urn ])
+  end
+  
   # Get all attributes
   def all
     urn?()
@@ -274,7 +282,7 @@ class SparqlModel
     if @attributes[ _key ][4] == true
       count = @sparql.count([ :s, pred( _key ), _value ])
       if count > 0
-        raise "#{ _key }:#{ _value } pair must be UNIQUE"
+        raise ":#{ _key } must be UNIQUE"
       end
     end
   end

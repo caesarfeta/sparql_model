@@ -13,8 +13,8 @@ class Collection < SparqlModel
     @attributes = {
       :name => [ "this:name", ::String, SINGLE, REQUIRED, UNIQUE ],
       :keywords => [ "this:keywords", ::String, MULTI ],
-      :images => [ "this.images", ::String, MULTI ],
-      :subcollection => [ "this.subcollection", ::String, MULTI ]
+      :images => [ "this:images", ::String, MULTI ],
+      :subcollection => [ "this:subcollection", ::String, MULTI ]
     }
     
     @model = "<urn:sparql_model:collection>"
