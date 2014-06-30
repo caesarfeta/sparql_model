@@ -25,13 +25,30 @@ class SparqlModel
   SPAWN = "<http://localhost/sparql_model#spawn>"
   
   def initialize( _key=nil )
+    #-------------------------------------------------------------
+    #  Make sure everything necessary is in place
+    #-------------------------------------------------------------
+    check = [ @endpoint, @model, @prefixes, @attributes ]
+    check.each do | val |
+      if val == nil
+        raise "Configuration is incomplete."
+      end
+    end
+    #-------------------------------------------------------------
+    #  Get a SparqlQuick handle
+    #-------------------------------------------------------------
+    @sparql = SparqlQuick.new( @endpoint, @prefixes )
+    #-------------------------------------------------------------
+    #  Get the key
+    #-------------------------------------------------------------
     @key = getKey()
     if _key != nil
       get( _key )
     end
   end
   
-  # _key { String } The 'key' value
+  # _key { String } The KEY key value
+  # @return { String } String representation of a URN
   def get( _key )
     results = @sparql.select([ :s, pred( @key ), _key ])
     if results.length == 0
@@ -40,6 +57,8 @@ class SparqlModel
     @urn = "<"+results[0][:s].to_s+">"
   end
   
+  # Get the attribute key that's the KEY
+  # @return { Symbol } The KEY key
   def getKey
     @attributes.each do | key, val |
       if val[5] == TRUE
@@ -179,6 +198,7 @@ class SparqlModel
   end
   
   # _uri { RDF::URI, String }
+  # @return { Symbol } Attribute's key
   def uri_to_attr( _uri )
     check = _uri.to_s
     @prefixes.each do | key, val |

@@ -2,12 +2,12 @@ require 'sparql_model'
 class Image < SparqlModel
 
   def initialize( _key=nil )
-    
+    @endpoint = "http://localhost:8080/ds"
+    @model = "<urn:sparql_model:image>"
     @prefixes = {
       :exif => "<http://www.kanzaki.com/ns/exif#>",
       :this => "<http://localhost/sparql_model/image#>"
     }
-    
     @attributes = {
       :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
       :keywords => [ "this:keywords", ::String, MULTI ],
@@ -49,10 +49,7 @@ class Image < SparqlModel
       :sharpness => [ "exif:sharpness", ::String, SINGLE ],
       :image_unique_id => [ "exif:imageUniqueId", ::String, SINGLE ]
     }
-    
-    @model = "<urn:sparql_model:image>"
-    @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
     super( _key )
-    
   end
+  
 end
