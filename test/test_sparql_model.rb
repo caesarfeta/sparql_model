@@ -105,14 +105,14 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( true, check )
   end
   
-  def test_add_single?
+  def test_add_single
     SparqlTest.empty()
     img = Image.new
-    img.create({ :path => 'test_add_single?--1' })
-    img.create({ :path => 'test_add_single?--2' })
+    img.create({ :path => 'test_add_single--1' })
+    img.create({ :path => 'test_add_single--2' })
     check = false
     begin
-      img.add( :path, 'test_add_single?--1' )
+      img.add( :path, 'test_add_single--1' )
     rescue
       check = true
     end
@@ -153,7 +153,13 @@ class SparqlModelTest < Test::Unit::TestCase
     col = Collection.new
     col.create({ :name => 'Collection' })
     col.destroy()
-    assert_equal( true, true )
+    error = ''
+    begin
+      col.get('Collection')
+    rescue StandardError => e
+      error = e.to_s
+    end
+    assert_equal( "Instance could not be found, :name => Collection", error )
   end
   
 end

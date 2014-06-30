@@ -33,7 +33,7 @@ class Collection < SparqlModel
   def get( _name )
     results = @sparql.select([ :s, pred( :name ), _name ])
     if results.length == 0
-      raise "Record could not be found for #{ _name }"
+      raise "Instance could not be found, :name => #{ _name }"
     end
     @urn = "<"+results[0][:s].to_s+">"
   end

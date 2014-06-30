@@ -184,9 +184,10 @@ If you're running your code on the test fuseki server, you can [ see the RDF tri
 
 
 # Using multiple classes together
-Load your model class
+Load your classes
 
 	load 'collection.rb'
+	load 'image.rb'
 
 Create a collection instance
 
@@ -194,7 +195,19 @@ Create a collection instance
 
 Create a collection
 
-	col.create({ :name => "Collection Test", :images => [ "<urn:sparql_model:image.1>" ] })
+	col.create({ :name => "Collection Test" })
+
+Create some image records
+
+	img = Image.new
+	img.create({ :path => "http://localhost/images/photo.jpg", :keywords => [ "vacation", "2014", "canyon" ] })
+	img.create({ :path => "http://localhost/images/photo2.jpg", :keywords => [ "vacation", "2014", "canyon" ] })
+
+Add an image to the collection
+
+	col.add( :images, img.get('http://localhost/images/photo.jpg') )
+	col.add( :images, img.get('http://localhost/images/photo2.jpg') )
+
 
 
 

@@ -68,12 +68,12 @@ class SparqlModel
   # _key { Symbol }
   # _value { String, Other }
   def add( _key, _value )
-    urn?()
+    urn_check()
     key = _key.to_sym
     attr?( key )
     attr_type( key )
-    type_class?( key, _value )
-    multi?( key )
+    type_class_check( key, _value )
+    multi_check( key )
     @sparql.insert([ @urn, pred( key ), _value ])
   end
   
@@ -81,7 +81,7 @@ class SparqlModel
   # _key { Symbol }
   # _value { String, Other }
   def delete( _key, _value=nil )
-    urn?()
+    urn_check()
     key = _key.to_sym
     attr?( key )
     if _value == nil
@@ -94,14 +94,14 @@ class SparqlModel
   # Destroy an instance
   # Remove any triple where instance is a subject or an object.
   def destroy()
-    urn?()
+    urn_check()
     @sparql.delete([ @urn, :p, :o ])
     @sparql.delete([ :s, :p, @urn ])
   end
   
   # Get all attributes
   def all
-    urn?()
+    urn_check()
     values = @sparql.select([ @urn, :p, :o ])
     results = {}
     values.each do | value |
@@ -201,6 +201,8 @@ class SparqlModel
   end
   
   # Return the right datatype
+  # _key { Symbol }
+  # _value { Array, String }
   def data_value( _key, _value )
     cls = attr_type( _key )
     if cls == ::String
@@ -218,7 +220,7 @@ class SparqlModel
   # _key { Symbol }
   # _value { Array, String }
   def update( _key, _value )
-    urn?()
+    urn_check()
     attr?( _key )
     #-------------------------------------------------------------
     #  Get
@@ -251,9 +253,9 @@ class SparqlModel
     #  Set
     #-------------------------------------------------------------
     attr_type( _key )
-    type_class?( _key, _value )
-    single?( _key )
-    unique?( _key, _value )
+    type_class_check( _key, _value )
+    single_check( _key )
+    unique_check( _key, _value )
     @sparql.update([ @urn, pred( _key ), _value ])
   end
   
@@ -278,7 +280,7 @@ class SparqlModel
   # Make sure a key value pair is unique
   # _key { Symbol }
   # _value { Array, String }
-  def unique?( _key, _value )
+  def unique_check( _key, _value )
     if @attributes[ _key ][4] == true
       count = @sparql.count([ :s, pred( _key ), _value ])
       if count > 0
@@ -299,7 +301,7 @@ class SparqlModel
   end
   
   # _key { Symbol }
-  def single?( _key )
+  def single_check( _key )
     check = single_or_multi( _key )
     if check != SINGLE
       raise "#{ _key } is not a SINGLE attribute. Use add( :#{ _key }, 'value' ) instead."
@@ -307,7 +309,7 @@ class SparqlModel
   end
   
   # _key { Symbol }
-  def multi?( _key )
+  def multi_check( _key )
     check = single_or_multi( _key )
     if check != MULTI
       raise "#{ _key } is not a MULTI attribute."
@@ -315,7 +317,7 @@ class SparqlModel
   end
   
   # Make sure URN is defined
-  def urn?
+  def urn_check
     if @urn == nil
       raise "Error @URN is null"
     end
@@ -328,7 +330,7 @@ class SparqlModel
   
   # _type { Symbol }
   # _value { String, Other }
-  def type_class?( _key, _value )
+  def type_class_check( _key, _value )
     type = @attributes[ _key ][1]
     check = _value.class
     if check != type
