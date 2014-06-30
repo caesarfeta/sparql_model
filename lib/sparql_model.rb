@@ -95,8 +95,8 @@ class SparqlModel
   # Remove any triple where instance is a subject or an object.
   def destroy()
     urn?()
-    @sparql.destroy([ @urn, :p, :o ])
-    @sparql.destroy([ :s, :p, @urn ])
+    @sparql.delete([ @urn, :p, :o ])
+    @sparql.delete([ :s, :p, @urn ])
   end
   
   # Get all attributes

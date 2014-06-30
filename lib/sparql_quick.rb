@@ -67,14 +67,14 @@ class SparqlQuick
       hash.keys.each do | key |
         case key
           when :s
-            toDelete[0] = hash[key]
+            toDelete[0] = hash[key].to_s.tagify
           when :p
-            toDelete[1] = hash[key]
+            toDelete[1] = hash[key].to_s.tagify
           when :o
             toDelete[2] = hash[key]
         end
-        destroy( toDelete )
       end
+      destroy( toDelete )
     end
   end
   
@@ -265,5 +265,10 @@ class String
   # @return { String }
   def clip
     self[1..-2]
+  end
+  
+  # Add opening and closing tags
+  def tagify
+    "<#{self}>"
   end
 end

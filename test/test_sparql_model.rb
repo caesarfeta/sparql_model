@@ -2,6 +2,7 @@ require 'test/unit'
 require 'benchmark'
 require 'sparql_test'
 require_relative '../lib/image'
+require_relative '../lib/collection'
 
 class SparqlModelTest < Test::Unit::TestCase
   
@@ -145,6 +146,14 @@ class SparqlModelTest < Test::Unit::TestCase
       img.create({ :path => "path#{i}" })
     end
     assert_equal( ::Integer, img.total.class.superclass )
+  end
+  
+  def test_collection_destroy
+    SparqlTest.empty()
+    col = Collection.new
+    col.create({ :name => 'Collection' })
+    col.destroy()
+    assert_equal( true, true )
   end
   
 end
