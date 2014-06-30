@@ -1,9 +1,7 @@
 require 'sparql_model'
 class Image < SparqlModel
-  
-  # Constructor...
-  # _url { String } The URL to the image
-  def initialize( _url=nil )
+
+  def initialize( _key=nil )
     
     @prefixes = {
       :exif => "<http://www.kanzaki.com/ns/exif#>",
@@ -12,7 +10,7 @@ class Image < SparqlModel
     
     #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
     @attributes = {
-      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE ],
+      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
       :keywords => [ "this:keywords", ::String, MULTI ],
       :image_descrption => [ "exif:imageDescription",  ::String, SINGLE ],
       :make => [ "exif:make",  ::String, SINGLE ],
@@ -55,23 +53,7 @@ class Image < SparqlModel
     
     @model = "<urn:sparql_model:image>"
     @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
-    
-    #-------------------------------------------------------------
-    #  If image URL is supplied get it
-    #-------------------------------------------------------------
-    if _url != nil
-      get( _url )
-    end
+    super( _key )
     
   end
-  
-  # _url { String } The URL to the image
-  def get( _url )
-    results = @sparql.select([ :s, pred( :path ), _url ])
-    if results.length == 0
-      raise "Record could not be found for #{ url }"
-    end
-    @urn = "<"+results[0][:s].to_s+">"
-  end
-    
 end

@@ -49,46 +49,30 @@ With a triplestore and SparqlModel you just have to add a single configuration l
 # Create a data model with SparqlModel
 Here's a sample class.
 
+	require 'sparql_model'
 	class Image < SparqlModel
-	  
-	  # Constructor...
-	  # _url { String } The URL to the image
-	  def initialize( _url=nil )
+	
+	  def initialize( _key=nil )
 	    
 	    @prefixes = {
-	    :exif => "<http://www.kanzaki.com/ns/exif#>",
+	      :exif => "<http://www.kanzaki.com/ns/exif#>",
 	      :this => "<http://localhost/sparql_model/image#>"
 	    }
 	    
 	    #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
 	    @attributes = {
-	      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE ],
+	      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
 	      :keywords => [ "this:keywords", ::String, MULTI ],
-	      :x_resolution => [ "exif:xResolution", ::String, SINGLE ],
-	      :y_resolution => [ "exif:yResolution", ::String, SINGLE ]
+	      :image_descrption => [ "exif:imageDescription",  ::String, SINGLE ],
+	      :make => [ "exif:make",  ::String, SINGLE ],
+	      :model => [ "exif:model", ::String, SINGLE ]
 	    }
 	    
-	    @model = "<urn:image>"
+	    @model = "<urn:sparql_model:image>"
 	    @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
-	    
-	    #-------------------------------------------------------------
-	    #  If image URL is supplied get it
-	    #-------------------------------------------------------------
-	    if _url != nil
-	      get( _url )
-	    end
+	    super( _key )
 	    
 	  end
-	  
-	  # _url { String } The URL to the image
-	  def get( _url )
-	    results = @sparql.select([ :s, pred( :path ), _url ])
-	    if results.length == 0
-	      raise "Record could not be found for #{ url }"
-	    end
-	    @urn = "<"+results[0][:s].to_s+">"
-	  end
-	    
 	end
 
 Remember to inherit from SparqlModel
@@ -102,18 +86,19 @@ Define an initialize() method
 Define RDF ontology @prefixes
 
 	@prefixes = {
-	  :rdf => "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-	  :exif => "<http://www.kanzaki.com/ns/exif#>"
+	  :exif => "<http://www.kanzaki.com/ns/exif#>",
+	  :this => "<http://localhost/sparql_model/image#>"
 	}
 
 Define your model's @attributes
 
-    @attributes = {
-      :path => [ "rdf:path", ::String, SINGLE, REQUIRED ],
-      :keywords => [ "rdf:keywords", ::String, MULTI ],
-      :x_resolution => [ "exif:xResolution", ::String, SINGLE ],
-      :y_resolution => [ "exif:yResolution", ::String, SINGLE ]
-    }
+	@attributes = {
+	  :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
+	  :keywords => [ "this:keywords", ::String, MULTI ],
+	  :image_descrption => [ "exif:imageDescription",  ::String, SINGLE ],
+	  :make => [ "exif:make",  ::String, SINGLE ],
+	  :model => [ "exif:model", ::String, SINGLE ]
+	}
 
 @attributes is a hash of :symbol =&gt; [ Array ] pairs.
 
@@ -124,6 +109,12 @@ Let me explain what's in [ Array ].
 * [2] some RDF predicates should have only a SINGLE value, others should have MULTI values
 * [3] --Optional-- some values are REQUIRED for a new instance to be created
 * [4] --Optional-- some SINGLE values must be UNIQUE
+* [5] --Optional-- marks the predicate as the KEY used by the get method
+
+So you need an attribute that looks like one of these these...
+
+	:path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
+	:id => [ "this:id", ::Fixnum, SINGLE, REQUIRED, UNIQUE, KEY ],
 
 Define the @model name
 
@@ -141,23 +132,9 @@ Remember to pass your @prefixes to the SparqlQuick constructor.
 
 	@sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
 
-Create a get() method which you will use to grab the instance RDF subject @urn.
-The example below takes a URL and sets the subject @urn
+I add this little chunk of code in my initialize function so the parent SparqlModel class runs the get function when I initialize the class.
 
-	  # _url { String } The URL to the image
-	  def get( _url )
-	    results = @sparql.select([ :s, pred( :path ), _url ])
-	    if results.length == 0
-	      raise "Record could not be found for #{ url }"
-	    end
-	    @urn = "<"+results[0][:s].to_s+">"
-	  end
-
-I add this little chunk of code in my initialize function so I can run my get function if I pass a URL when I initialize the class.
-
-	if _url != nil
-	  get( _url )
-	end
+	super( _key )
 
 Now you have a data model.
 Let's do something with it.

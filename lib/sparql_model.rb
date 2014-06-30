@@ -17,19 +17,38 @@ class SparqlModel
   OPTIONAL = false
   
   UNIQUE = true
+  KEY = true
   
   #-------------------------------------------------------------
   #  Used to mark instances
   #-------------------------------------------------------------
   SPAWN = "<http://localhost/sparql_model#spawn>"
   
-  def initialize
-    @datatype_map = {}
-    @prefixes = {}
-    @attributes = {}
-    @model = nil
-    @sparql = nil # SparqlQuick.new( Rails.configuration.sparql_endpoint, @prefixes )
+  def initialize( _key=nil )
+    @key = getKey()
+    if _key != nil
+      get( _key )
+    end
   end
+  
+  # _key { String } The 'key' value
+  def get( _key )
+    results = @sparql.select([ :s, pred( @key ), _key ])
+    if results.length == 0
+      raise "Instance could not be found, :#{ @key } => #{ _key }"
+    end
+    @urn = "<"+results[0][:s].to_s+">"
+  end
+  
+  def getKey
+    @attributes.each do | key, val |
+      if val[5] == TRUE
+        return key
+      end
+    end
+    raise "No KEY attribute defined"
+  end
+
   
   # Create a new instance
   # _values { Hash }
