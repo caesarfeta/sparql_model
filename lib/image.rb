@@ -8,7 +8,6 @@ class Image < SparqlModel
       :this => "<http://localhost/sparql_model/image#>"
     }
     
-    #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
     @attributes = {
       :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
       :keywords => [ "this:keywords", ::String, MULTI ],

@@ -245,8 +245,3 @@ Make a change?
 
 	exec($0)
 	load "image.rb"
-
-Want to track down where dependencies are located?
-
-	mate `gem which sparql`
-	[editor] `gem which [gem]`
