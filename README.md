@@ -2,6 +2,35 @@
 * SparqlModel - Create data models with a SPARQL-queryable triplestore back-end.
 * SparqlQuick - Query a SPARQL endpoint with ease.
 
+SparqlModel should work with any triplestore that implements RDF, and supports the HTTP and SPARQL prototcols.
+
+* Triplestores have become increasingly popular because... 
+	* They scale well
+		* New types of data can be stored without much fuss.
+	* They're extremely flexible
+		* Easier to do the unplanned and unexpected
+	* Most use HTTP for moving data in and out.
+
+Traditional web-applications use relational databases for persistent storage.
+
+* Relation Databases
+	* Popular because...
+		* Retrieve data with keys.
+			* Reliability
+		* Enforce data types.
+			* Reliability
+		* Familiarirty	
+	* Stink because...
+		* Less open-ended
+		* Requires very good schema design from outset.
+			* Hard to modify.
+	
+SparqlModel was designed to make creating and interacting with data-models ( or schemas ) extremely easy.
+
+Data-models can be created and improved upon faster than with relational database systems.
+With a relational database if you wanted to start storing a new cateogry of data you'd have to run an ALTER TABLE statement to create a new column in the right table and then update your model class.
+With a triplestore and SparqlModel you just have to add a single configuration line to your model class.
+
 
 
 # Install

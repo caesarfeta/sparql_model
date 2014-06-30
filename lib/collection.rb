@@ -9,7 +9,7 @@ class Collection < SparqlModel
       :this => "<http://localhost/sparql_model/collection#>"
     }
     
-    #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
+    #  attribute => [ predicate, variable-type, value-per-predicate, create-required?, unique-value ]
     @attributes = {
       :name => [ "this:name", ::String, SINGLE, REQUIRED, UNIQUE ],
       :keywords => [ "this:keywords", ::String, MULTI ],
