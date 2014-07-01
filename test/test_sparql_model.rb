@@ -139,6 +139,16 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( 100, img.total )
   end
   
+  def test_byId
+    SparqlTest.empty()
+    img = Image.new
+    img.create({ :path => "path1" })
+    urn = img.urn
+    img1 = Image.new
+    urn1 = img.byId( 1 )
+    assert_equal( urn, urn1 )
+  end
+  
   def test_total
     SparqlTest.empty()
     img = Image.new

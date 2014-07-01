@@ -57,6 +57,17 @@ class SparqlModel
     @urn = "<"+results[0][:s].to_s+">"
   end
   
+  # _id { Int } The id
+  # @return { String } String representation of a URN
+  def byId( _id )
+    urn = to_urn( _id )
+    results = @sparql.select([ @model, SPAWN, urn ])
+    if results.length == 0
+      raise "Instance could not be found, #{ urn }"
+    end
+    @urn = urn
+  end
+  
   # Get the attribute key that's the KEY
   # @return { Symbol } The KEY key
   def getKey
