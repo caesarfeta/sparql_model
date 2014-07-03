@@ -5,6 +5,7 @@ class SparqlModel
   #  Getters
   #-------------------------------------------------------------
   attr_reader :urn
+  attr_reader :model
   
   #-------------------------------------------------------------
   #  Configuration constants are more readable than contextless
@@ -57,10 +58,16 @@ class SparqlModel
     @urn = "<"+results[0][:s].to_s+">"
   end
   
-  # _id { Int } The id
+  # _id { Integer or String } The id, just the INT or a full URN
   # @return { String } String representation of a URN
   def byId( _id )
-    urn = to_urn( _id )
+    urn = _id
+    if urn.class.superclass == Integer
+      urn = to_urn( urn )
+    end
+    if urn.class == String && urn.is_i?
+      urn = to_urn( urn.to_i )
+    end
     results = @sparql.select([ @model, SPAWN, urn ])
     if results.length == 0
       raise "Instance could not be found, #{ urn }"
