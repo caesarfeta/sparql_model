@@ -33,9 +33,9 @@ Traditional web-applications use relational databases for persistent storage.
 		* Requires very good schema design from outset.
 			* Hard to modify.
 	
-SparqlModel was designed to make creating and interacting with data-models ( or schemas ) extremely easy.
+SparqlModel was designed to make creating and interacting with datamodels backed by a triplestore extremely easy.
 
-Data-models can be created and improved upon faster than with relational database systems.
+Triplestore datamodels can be created and improved upon faster than with relational database systems.
 With a relational database if you wanted to start storing a new cateogry of data you'd have to run an ALTER TABLE statement to create a new column in the right table and then update your model class.
 With a triplestore and SparqlModel you just have to add a single configuration line to your model class.
 
@@ -59,14 +59,11 @@ Here's a sample class.
 
 	require 'sparql_model'
 	class Image < SparqlModel
-	
 	  def initialize( _key=nil )
-	    
+	    @endpoint = "http://localhost:8080/ds"
 	    @prefixes = {
 	      :exif => "<http://www.kanzaki.com/ns/exif#>",
-	      :this => "<http://localhost/sparql_model/image#>"
 	    }
-	    
 	    #  attribute => [ predicate, variable-type, value-per-predicate, create-required? ]
 	    @attributes = {
 	      :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
@@ -75,11 +72,7 @@ Here's a sample class.
 	      :make => [ "exif:make",  ::String, SINGLE ],
 	      :model => [ "exif:model", ::String, SINGLE ]
 	    }
-	    
-	    @model = "<urn:sparql_model:image>"
-	    @sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
-	    super( _key )
-	    
+		super( _key )
 	  end
 	end
 
@@ -95,7 +88,6 @@ Define RDF ontology @prefixes
 
 	@prefixes = {
 	  :exif => "<http://www.kanzaki.com/ns/exif#>",
-	  :this => "<http://localhost/sparql_model/image#>"
 	}
 
 Define your model's @attributes
@@ -124,23 +116,7 @@ So you need an attribute that looks like one of these these...
 	:path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
 	:id => [ "this:id", ::Fixnum, SINGLE, REQUIRED, UNIQUE, KEY ],
 
-Define the @model name
-
-	@model = "<urn:image>"
-
-@model becomes the template for each instances RDF-triple subject value ( :s ).
-
-	<urn:image.1>
-	<urn:image.2>
-
-The % sign will be replaced by an integer id value, &lt;urn:image.1&gt;, &lt;urn:image.2&gt;, etc., everytime a new instance of your model is created.
-
-Create a connection to your @sparql endpoint with a SparqlQuick instance.
-Remember to pass your @prefixes to the SparqlQuick constructor.
-
-	@sparql = SparqlQuick.new( "http://localhost:8080/ds", @prefixes )
-
-I add this little chunk of code in my initialize function so the parent SparqlModel class runs the get function when I initialize the class.
+Add this little chunk of code in your initialize function so the parent SparqlModel class runs the get function and configures necessities when you initialize the class.
 
 	super( _key )
 
