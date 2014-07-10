@@ -24,8 +24,6 @@ class SparqlModel
   #  Used to mark instances
   #-------------------------------------------------------------
   SPAWN = "<http://localhost/sparql_model#spawn>"
-  CREATED = "<http://localhost/sparql_model#created>"
-  EDITED = "<http://localhost/sparql_model#edited"
   
   def initialize( _key=nil )
     #-------------------------------------------------------------
@@ -37,6 +35,11 @@ class SparqlModel
         raise "Configuration is incomplete."
       end
     end
+    #-------------------------------------------------------------
+    #  Add created and edited attributes to store timestamp
+    #-------------------------------------------------------------
+    @attributes[ :created ] = [ "this:created", ::Integer, SINGLE ]
+    @attributes[ :edited ] = [ "this:edited", ::Integer, SINGLE ]
     #-------------------------------------------------------------
     #  Get a SparqlQuick handle
     #-------------------------------------------------------------
@@ -94,6 +97,7 @@ class SparqlModel
   def create( _values )
     @urn = new_urn()
     required_check( _values )
+    @sparql.insert([ @urn, pred( :created ), Time.now.utc.to_i ])
     change( _values )
     #-------------------------------------------------------------
     #  Mark an instance
@@ -133,6 +137,7 @@ class SparqlModel
     type_class_check( key, _value )
     multi_check( key )
     @sparql.insert([ @urn, pred( key ), _value ])
+    @sparql.update([ @urn, pred( :edited ), Time.now.utc.to_i ])
   end
   
   # Delete an attribute
@@ -144,9 +149,11 @@ class SparqlModel
     attr?( key )
     if _value == nil
       @sparql.delete([ @urn, pred( key ), :o ])
+      @sparql.update([ @urn, pred( :edited ), Time.now.utc.to_i ])
       return
     end
     @sparql.delete([ @urn, pred( key ), _value ])
+    @sparql.update([ @urn, pred( :edited ), Time.now.utc.to_i ])
   end
   
   # Destroy an instance
@@ -185,7 +192,7 @@ class SparqlModel
       return @attributes
     end
     list = []
-    @attributes.each do | _key, _val |
+    @attributes.each do |_key,_val|
       list.push( _key )
     end
     list.sort()
@@ -226,6 +233,9 @@ class SparqlModel
   # @return { Symbol } Attribute's key
   def uri_to_attr( _uri )
     check = _uri.to_s
+    #-------------------------------------------------------------
+    #  Check prefixes
+    #-------------------------------------------------------------
     @prefixes.each do | key, val |
       url = val.clip
       if check.include?( url )
@@ -322,6 +332,7 @@ class SparqlModel
     single_check( _key )
     unique_check( _key, _value )
     @sparql.update([ @urn, pred( _key ), _value ])
+    @sparql.update([ @urn, pred( :edited ), Time.now.utc.to_i ])
   end
   
   # Does attribute key exist?

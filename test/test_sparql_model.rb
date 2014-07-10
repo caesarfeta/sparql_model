@@ -182,11 +182,27 @@ class SparqlModelTest < Test::Unit::TestCase
           break
         end
       when false
+        if key == :edited || key == :created
+          next
+        end
         if value != values[key]
           check = false
           break
         end
       end
+    end
+    assert_equal( true, check )
+  end
+  
+  def test_timestamp
+    SparqlTest.empty()
+    col = Collection.new
+    col.create({ :name => 'Collection' })
+    sleep 1
+    col.add( :keywords, 'whoa' )
+    check = false
+    if col.created < col.edited
+      check = true
     end
     assert_equal( true, check )
   end
