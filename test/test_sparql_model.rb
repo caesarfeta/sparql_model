@@ -167,6 +167,30 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( ::Integer, img.total.class.superclass )
   end
   
+  def test_all
+    SparqlTest.empty()
+    col = Collection.new
+    values = { :name => 'Collection', :keywords => [ 'friend', 'dog' ], :float => 0.45787 }
+    col.create( values )
+    check = true
+    col.all.each do |key, value|
+      case value.kind_of?(Array)
+      when true
+        # Right now I don't care if MULTI attributes are returned with the same sequence
+        if value.sort != values[key].sort
+          check = false
+          break
+        end
+      when false
+        if value != values[key]
+          check = false
+          break
+        end
+      end
+    end
+    assert_equal( true, check )
+  end
+  
   def test_collection_destroy
     SparqlTest.empty()
     col = Collection.new

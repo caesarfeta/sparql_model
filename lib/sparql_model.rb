@@ -24,6 +24,8 @@ class SparqlModel
   #  Used to mark instances
   #-------------------------------------------------------------
   SPAWN = "<http://localhost/sparql_model#spawn>"
+  CREATED = "<http://localhost/sparql_model#created>"
+  EDITED = "<http://localhost/sparql_model#edited"
   
   def initialize( _key=nil )
     #-------------------------------------------------------------
@@ -155,18 +157,23 @@ class SparqlModel
     @sparql.delete([ :s, :p, @urn ])
   end
   
-  # Get all attributes
+  # Get all instance attribute values
+  # @return { Hash } All instance attribute values in triplestore
   def all
     urn_check()
     values = @sparql.select([ @urn, :p, :o ])
     results = {}
     values.each do | value |
       key = uri_to_attr( value[:p] )
-      #-------------------------------------------------------------
-      #  TODO: Check the value to return
-      #-------------------------------------------------------------
-      type = @attributes[ key ][1]
-      results[ key ] = value[:o].to_s
+      case single_or_multi( key )
+      when MULTI
+        if results.has_key?( key ) == false
+          results[ key ] = []
+        end
+        results[ key ].push( data_value( key, value[:o] ) )
+      when SINGLE
+        results[ key ] = data_value( key, value[:o] )
+      end
     end
     results
   end
@@ -271,6 +278,7 @@ class SparqlModel
     if cls == ::Float
       return _value.to_f
     end
+    return _value
   end
   
   # Update an attribute

@@ -11,7 +11,9 @@ class Collection < SparqlModel
       :name => [ "this:name", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
       :keywords => [ "this:keywords", ::String, MULTI ],
       :images => [ "this:images", ::String, MULTI ],
-      :subcollection => [ "this:subcollection", ::String, MULTI ]
+      :subcollection => [ "this:subcollection", ::String, MULTI ],
+      :float => [ "this:float", ::Float, SINGLE ],
+      :int => [ "this:int", ::Integer, SINGLE ]
     }
     super( _key )
   end
