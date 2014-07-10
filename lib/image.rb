@@ -3,10 +3,8 @@ class Image < SparqlModel
 
   def initialize( _key=nil )
     @endpoint = "http://localhost:8080/ds"
-    @model = "<urn:sparql_model:image>"
     @prefixes = {
       :exif => "<http://www.kanzaki.com/ns/exif#>",
-      :this => "<http://localhost/sparql_model/image#>"
     }
     @attributes = {
       :path => [ "this:path", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],

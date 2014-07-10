@@ -27,6 +27,15 @@ class SparqlModel
   
   def initialize( _key=nil )
     #-------------------------------------------------------------
+    #  Infer model from classname
+    #-------------------------------------------------------------
+    name = self.class.to_s.downcase
+    @model = "<urn:sparql_model:#{name}>"
+    if @prefixes == nil
+      @prefixes = {}
+    end
+    @prefixes[ :this ] = "<http://localhost/sparql_model/#{name}#>"
+    #-------------------------------------------------------------
     #  Make sure everything necessary is in place
     #-------------------------------------------------------------
     check = [ @endpoint, @model, @prefixes, @attributes ]
