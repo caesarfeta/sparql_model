@@ -6,6 +6,8 @@ class SparqlModel
   #-------------------------------------------------------------
   attr_reader :urn
   attr_reader :model
+  attr_reader :spawn
+  attr_reader :endpoint
   
   #-------------------------------------------------------------
   #  Configuration constants are more readable than contextless
@@ -20,12 +22,11 @@ class SparqlModel
   UNIQUE = true
   KEY = true
   
-  #-------------------------------------------------------------
-  #  Used to mark instances
-  #-------------------------------------------------------------
-  SPAWN = "<http://localhost/sparql_model#spawn>"
-  
   def initialize( _key=nil )
+    #-------------------------------------------------------------
+    #  Used to mark instances
+    #-------------------------------------------------------------
+    @spawn = "<http://localhost/sparql_model#spawn>"
     #-------------------------------------------------------------
     #  Infer model from classname
     #-------------------------------------------------------------
@@ -82,7 +83,7 @@ class SparqlModel
     if urn.class == String && urn.is_i?
       urn = to_urn( urn.to_i )
     end
-    results = @sparql.select([ @model, SPAWN, urn ])
+    results = @sparql.select([ @model, @spawn, urn ])
     if results.length == 0
       raise "Instance could not be found, #{ urn }"
     end
@@ -111,7 +112,7 @@ class SparqlModel
     #-------------------------------------------------------------
     #  Mark an instance
     #-------------------------------------------------------------
-    @sparql.insert([ @model, SPAWN, @urn ])
+    @sparql.insert([ @model, @spawn, @urn ])
     return @urn
   end
   
@@ -222,7 +223,7 @@ class SparqlModel
   # Get the number of instances
   # @return { Integer }
   def total
-    @sparql.count([ @model, SPAWN, :o ])
+    @sparql.count([ @model, @spawn, :o ])
   end
   
   # Get instance by id
@@ -324,11 +325,12 @@ class SparqlModel
     if _value == nil
       sval = @sparql.value([ @urn, pred( _key ) ])
       cls = sval.class
+      multi = single_or_multi( _key )
       #-------------------------------------------------------------
       #  String
       #-------------------------------------------------------------
       if cls == ::String
-        if single_or_multi( _key ) == MULTI
+        if multi == MULTI
           return [ data_value( _key, sval ) ]
         end
         return data_value( _key, sval )
@@ -346,6 +348,9 @@ class SparqlModel
       #-------------------------------------------------------------
       #  Nothing
       #-------------------------------------------------------------
+      if multi == MULTI
+        return []
+      end
       return nil
     end
     #-------------------------------------------------------------
@@ -444,7 +449,7 @@ class SparqlModel
   # Get a new URN
   # @return { String }
   def new_urn
-    index = @sparql.next_index([ @model, SPAWN ])
+    index = @sparql.next_index([ @model, @spawn ])
     to_urn( index )
   end
   
