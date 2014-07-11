@@ -178,7 +178,10 @@ class SparqlModel
   def all
     urn_check()
     values = @sparql.select([ @urn, :p, :o ])
-    results = {}
+    results = { :urn => @urn }
+    #-------------------------------------------------------------
+    #  Build the results HASH by looping through the results
+    #-------------------------------------------------------------
     values.each do | value |
       key = uri_to_attr( value[:p] )
       case single_or_multi( key )
@@ -191,6 +194,15 @@ class SparqlModel
         results[ key ] = data_value( key, value[:o] )
       end
     end
+    #-------------------------------------------------------------
+    #  Attributes not stored in the triplestore get empty strings
+    #  instead of Nil to make templating go smoother
+    #-------------------------------------------------------------
+    @attributes.each do |key,val|
+      if results.has_key?( key ) == false
+        results[ key ] = ''
+      end
+    end
     results
   end
   
@@ -201,8 +213,8 @@ class SparqlModel
       return @attributes
     end
     list = []
-    @attributes.each do |_key,_val|
-      list.push( _key )
+    @attributes.each do |key,val|
+      list.push( key )
     end
     list.sort()
   end
@@ -307,7 +319,7 @@ class SparqlModel
     urn_check()
     attr?( _key )
     #-------------------------------------------------------------
-    #  Get
+    #  Get the value
     #-------------------------------------------------------------
     if _value == nil
       sval = @sparql.value([ @urn, pred( _key ) ])
@@ -316,6 +328,9 @@ class SparqlModel
       #  String
       #-------------------------------------------------------------
       if cls == ::String
+        if single_or_multi( _key ) == MULTI
+          return [ data_value( _key, sval ) ]
+        end
         return data_value( _key, sval )
       end
       #-------------------------------------------------------------
@@ -334,7 +349,7 @@ class SparqlModel
       return nil
     end
     #-------------------------------------------------------------
-    #  Set
+    #  Set the value
     #-------------------------------------------------------------
     attr_type( _key )
     type_class_check( _key, _value )

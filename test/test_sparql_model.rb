@@ -174,6 +174,9 @@ class SparqlModelTest < Test::Unit::TestCase
     col.create( values )
     check = true
     col.all.each do |key, value|
+      if value == ''
+        next
+      end
       case value.kind_of?(Array)
       when true
         # Right now I don't care if MULTI attributes are returned with the same sequence
@@ -182,7 +185,7 @@ class SparqlModelTest < Test::Unit::TestCase
           break
         end
       when false
-        if key == :edited || key == :created
+        if key == :edited || key == :created || key == :urn
           next
         end
         if value != values[key]
