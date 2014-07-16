@@ -307,6 +307,9 @@ class SparqlModel
     if cls == ::Integer || cls == ::Fixnum || cls == ::Bignum
       return _value.to_i
     end
+    if cls == ::Rational
+      return _value.to_r
+    end
     if cls == ::Float
       return _value.to_f
     end
@@ -442,7 +445,7 @@ class SparqlModel
       if type == ::Integer && _value.integer?
         return
       end
-      raise "Type mismatch: \"#{ check }\" passed but  \"#{ type }\" is needed."
+      raise "Type mismatch: \"#{ check }\" passed but  \"#{ type }\" is needed for \"#{ _key }\"."
     end
   end
   
