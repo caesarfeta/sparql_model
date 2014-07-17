@@ -8,6 +8,8 @@ class SparqlModel
   attr_reader :model
   attr_reader :spawn
   attr_reader :endpoint
+  attr_reader :attributes
+  attr_reader :prefixes
   
   #-------------------------------------------------------------
   #  Configuration constants are more readable than contextless
