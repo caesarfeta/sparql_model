@@ -203,7 +203,14 @@ class SparqlModel
     #-------------------------------------------------------------
     @attributes.each do |key,val|
       if results.has_key?( key ) == false
-        results[ key ] = ''
+        case single_or_multi( key )
+        when MULTI
+          if results.has_key?( key ) == false
+            results[ key ] = []
+          end
+        when SINGLE
+          results[ key ] = ''
+        end
       end
     end
     results
