@@ -78,20 +78,6 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( true, check )
   end
   
-  def test_fixnum
-    SparqlTest.empty()
-    img = Image.new
-    img.create({ :path => 'check' })
-    check = false
-    begin
-      img.x_resolution = "123"
-    rescue
-      img.x_resolution = 123
-      check = img.x_resolution.class
-    end
-    assert_equal( ::Fixnum, check )
-  end
-  
   def test_unique
     SparqlTest.empty()
     img = Image.new

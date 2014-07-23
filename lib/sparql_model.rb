@@ -145,7 +145,7 @@ class SparqlModel
     key = _key.to_sym
     attr?( key )
     attr_type( key )
-    type_class_check( key, _value )
+    _value = data_value( key, _value )
     multi_check( key )
     @sparql.insert([ @urn, pred( key ), _value ])
     @sparql.update([ @urn, pred( :edited ), Time.now.utc.to_i ])
@@ -371,7 +371,7 @@ class SparqlModel
     #  Set the value
     #-------------------------------------------------------------
     attr_type( _key )
-    type_class_check( _key, _value )
+    _value = data_value( _key, _value )
     single_check( _key )
     unique_check( _key, _value )
     @sparql.update([ @urn, pred( _key ), _value ])
@@ -445,26 +445,6 @@ class SparqlModel
   # _key { Symbol }
   def single_or_multi( _key )
     @attributes[ _key ][2]
-  end
-  
-  # _type { Symbol }
-  # _value { String, Other }
-  def type_class_check( _key, _value )
-    type = @attributes[ _key ][1]
-    check = _value.class
-    if check != type
-      #-------------------------------------------------------------
-      #  If a simple conversion works... do it.
-      #  I cut users slack.
-      #-------------------------------------------------------------
-      if type == ::Integer
-        _value = _value.to_i
-      elsif type == ::Float
-        _value = _value.to_f
-      else
-        raise "Type mismatch: \"#{ check }\" passed but  \"#{ type }\" is needed for \"#{ _key }."
-      end
-    end
   end
   
   # Get a new URN
