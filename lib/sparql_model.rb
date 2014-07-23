@@ -122,8 +122,7 @@ class SparqlModel
   # _values { Hash }
   def change( _values )
     _values.each do | key, value |
-      check = single_or_multi( key )
-      case check
+      case single_or_multi( key )
       when SINGLE
         update( key, value )
       when MULTI
@@ -454,10 +453,17 @@ class SparqlModel
     type = @attributes[ _key ][1]
     check = _value.class
     if check != type
-      if type == ::Integer && _value.integer?
-        return
+      #-------------------------------------------------------------
+      #  If a simple conversion works... do it.
+      #  I cut users slack.
+      #-------------------------------------------------------------
+      if type == ::Integer
+        _value = _value.to_i
+      elsif type == ::Float
+        _value = _value.to_f
+      else
+        raise "Type mismatch: \"#{ check }\" passed but  \"#{ type }\" is needed for \"#{ _key }."
       end
-      raise "Type mismatch: \"#{ check }\" passed but  \"#{ type }\" is needed for \"#{ _key }."
     end
   end
   
