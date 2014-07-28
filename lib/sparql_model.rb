@@ -126,6 +126,7 @@ class SparqlModel
       when SINGLE
         update( key, value )
       when MULTI
+        delete( key )
         if value.class == ::Array
           value.each do | subval |
             add( key, subval )

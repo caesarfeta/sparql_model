@@ -105,6 +105,14 @@ class SparqlModelTest < Test::Unit::TestCase
     assert_equal( true, check )
   end
   
+  def test_change_multi
+    SparqlTest.empty()
+    img = Image.new
+    img.create({ :path => 'required', :keywords => [ 'one', 'two', 'three', 'four', 'five' ] })
+    img.change({ :keywords => [ 'six', 'seven', 'eight' ] })
+    assert_equal( img.keywords.length, 3 )
+  end
+  
 #  def test_thousand_creates
 #    SparqlTest.empty()
 #    img = Image.new
