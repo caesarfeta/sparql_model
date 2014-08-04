@@ -6,8 +6,8 @@ class Collection < SparqlModel
     @attributes = {
       :name => [ "this:name", ::String, SINGLE, REQUIRED, UNIQUE, KEY ],
       :keywords => [ "this:keywords", ::String, MULTI ],
-      :images => [ "this:images", ::String, MULTI ],
-      :subcollection => [ "this:subcollection", ::String, MULTI ],
+      :images => [ "this:images", ::RDF::URI, MULTI ],
+      :subcollection => [ "this:subcollection", ::RDF::URI, MULTI ],
       :float => [ "this:float", ::Float, SINGLE ],
       :int => [ "this:int", ::Integer, SINGLE ]
     }
