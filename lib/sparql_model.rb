@@ -310,9 +310,6 @@ class SparqlModel
   # _value { Array, String }
   def data_value( _key, _value )
     cls = attr_type( _key )
-    if cls == ::RDF::URI
-      return "<#{_value.to_s}>"
-    end
     if cls == ::String
       return _value.to_s
     end

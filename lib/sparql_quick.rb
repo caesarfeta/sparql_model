@@ -48,11 +48,12 @@ class SparqlQuick
         check_count += 1
       end
     end
-    if check_count == 3
-      raise "Did you really want to delete entire database? Argument must contain one URI or literal value."
-    end
     if check_count == 0
       destroy( _triple )
+      return
+    end
+    if check_count == 3
+      raise "Did you really want to delete entire database? Argument must contain one URI or literal value."
     end
     #-------------------------------------------------------------
     #  Check to see what you're deleting
@@ -72,8 +73,12 @@ class SparqlQuick
             toDelete[1] = hash[key].to_s.tagify
           when :o
             toDelete[2] = hash[key]
+            if toDelete[2].class == RDF::URI
+              toDelete[2] = toDelete[2].to_s.tagify
+            end
         end
       end
+      
       destroy( toDelete )
     end
   end
