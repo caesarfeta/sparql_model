@@ -60,8 +60,8 @@ class SparqlQuick
     #-------------------------------------------------------------
     results = select( _triple )
     #-------------------------------------------------------------
-    # SPARQL::Client.delete_data can only delete a complete
-    # s,p,o triple.  So we have to fill in the details.
+    #  SPARQL::Client.delete_data can only delete a complete
+    #  s,p,o triple.  So we have to fill in the details.
     #-------------------------------------------------------------
     results.each do | hash |
       toDelete = _triple.clone

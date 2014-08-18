@@ -24,6 +24,12 @@ class SparqlModel
   UNIQUE = true
   KEY = true
   
+  #-------------------------------------------------------------
+  #  This value is here so ::URN can be used in @attributes 
+  #  configs
+  #-------------------------------------------------------------
+  ::URN = true
+  
   def initialize( _key=nil )
     #-------------------------------------------------------------
     #  Used to mark instances
@@ -61,7 +67,11 @@ class SparqlModel
     #-------------------------------------------------------------
     @key = getKey()
     if _key != nil
-      get( _key )
+      if @key == nil
+        byId( _key )
+      else
+        get( _key )
+      end
     end
   end
   
@@ -100,7 +110,7 @@ class SparqlModel
         return key
       end
     end
-    raise "No KEY attribute defined"
+    return nil
   end
 
   
@@ -310,6 +320,9 @@ class SparqlModel
   # _value { Array, String }
   def data_value( _key, _value )
     cls = attr_type( _key )
+    if cls == ::URN
+      return _value.to_s.tagify
+    end
     if cls == ::String
       return _value.to_s
     end
@@ -392,7 +405,7 @@ class SparqlModel
   def attr_type( _key )
     type = @attributes[ _key ][1]
     if type == nil
-      raise "Type not specified."
+      raise "Type not specified for -- #{ _key }."
     end
     type
   end
