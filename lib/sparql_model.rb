@@ -1,9 +1,7 @@
 require 'sparql_quick'
 class SparqlModel
   
-  #-------------------------------------------------------------
-  #  Getters
-  #-------------------------------------------------------------
+  # Getters
   attr_reader :urn
   attr_reader :model
   attr_reader :spawn
@@ -11,10 +9,8 @@ class SparqlModel
   attr_reader :attributes
   attr_reader :prefixes
   
-  #-------------------------------------------------------------
-  #  Configuration constants are more readable than contextless
-  #  true & false values
-  #-------------------------------------------------------------
+  # Configuration constants are more readable than contextless
+  # true & false values
   SINGLE = true
   MULTI = false
   
@@ -24,47 +20,38 @@ class SparqlModel
   UNIQUE = true
   KEY = true
   
-  #-------------------------------------------------------------
-  #  This value is here so ::URN can be used in @attributes 
-  #  configs
-  #-------------------------------------------------------------
+  #  Wo ::URN can be used in attribute confis
   ::URN = true
   
   def initialize( _key=nil )
-    #-------------------------------------------------------------
+    
     #  Used to mark instances
-    #-------------------------------------------------------------
     @spawn = "<http://localhost/sparql_model#spawn>"
-    #-------------------------------------------------------------
+    
     #  Infer model from classname
-    #-------------------------------------------------------------
     name = self.class.to_s.downcase
     @model = "<urn:sparql_model:#{name}>"
     if @prefixes == nil
       @prefixes = {}
     end
     @prefixes[ :this ] = "<http://localhost/sparql_model/#{name}#>"
-    #-------------------------------------------------------------
-    #  Make sure everything necessary is in place
-    #-------------------------------------------------------------
+    
+    # Make sure everything necessary is in place
     check = [ @endpoint, @model, @prefixes, @attributes ]
     check.each do | val |
       if val == nil
         raise "Configuration is incomplete."
       end
     end
-    #-------------------------------------------------------------
-    #  Add created and edited attributes to store timestamp
-    #-------------------------------------------------------------
+    
+    # Add created and edited attributes to store timestamp
     @attributes[ :created ] = [ "this:created", ::Integer, SINGLE ]
     @attributes[ :edited ] = [ "this:edited", ::Integer, SINGLE ]
-    #-------------------------------------------------------------
+    
     #  Get a SparqlQuick handle
-    #-------------------------------------------------------------
     @sparql = SparqlQuick.new( @endpoint, @prefixes )
-    #-------------------------------------------------------------
+    
     #  Get the key
-    #-------------------------------------------------------------
     @key = getKey()
     if _key != nil
       if @key == nil
@@ -121,9 +108,8 @@ class SparqlModel
     required_check( _values )
     @sparql.insert([ @urn, pred( :created ), Time.now.utc.to_i ])
     change( _values )
-    #-------------------------------------------------------------
+    
     #  Mark an instance
-    #-------------------------------------------------------------
     @sparql.insert([ @model, @spawn, @urn ])
     return @urn
   end
@@ -192,9 +178,8 @@ class SparqlModel
     urn_check()
     values = @sparql.select([ @urn, :p, :o ])
     results = { :urn => @urn }
-    #-------------------------------------------------------------
+    
     #  Build the results HASH by looping through the results
-    #-------------------------------------------------------------
     values.each do | value |
       key = uri_to_attr( value[:p] )
       case single_or_multi( key )
@@ -207,10 +192,9 @@ class SparqlModel
         results[ key ] = data_value( key, value[:o] )
       end
     end
-    #-------------------------------------------------------------
+    
     #  Attributes not stored in the triplestore get empty strings
     #  instead of Nil to make templating go smoother
-    #-------------------------------------------------------------
     @attributes.each do |key,val|
       if results.has_key?( key ) == false
         case single_or_multi( key )
@@ -259,13 +243,11 @@ class SparqlModel
   
   # ActiveRecord style trickery
   def method_missing( _key, *_value )
-    #-------------------------------------------------------------
+    
     #  Get attribute object key
-    #-------------------------------------------------------------
     key = /^[^\=]*/.match( _key ).to_s.to_sym
-    #-------------------------------------------------------------
+    
     #  Return current value if no value assigned
-    #-------------------------------------------------------------
     value = _value[0]
     update( key, value )
   end
@@ -274,9 +256,8 @@ class SparqlModel
   # @return { Symbol } Attribute's key
   def uri_to_attr( _uri )
     check = _uri.to_s
-    #-------------------------------------------------------------
+    
     #  Check prefixes
-    #-------------------------------------------------------------
     @prefixes.each do | key, val |
       url = val.clip
       if check.include?( url )
@@ -289,9 +270,8 @@ class SparqlModel
         end
       end
     end
-    #-------------------------------------------------------------
+    
     #  Something went wrong if you made it this far
-    #-------------------------------------------------------------
     raise "Prefix not found #{ check }"
   end
   
@@ -329,9 +309,8 @@ class SparqlModel
     if cls == ::Integer || cls == ::Fixnum || cls == ::Bignum
       return _value.to_i
     end
-    #-------------------------------------------------------------
+    
     #  TODO: Add real Rational datatype support
-    #-------------------------------------------------------------
     if cls == ::Rational
       return _value.to_s
     end
@@ -347,25 +326,22 @@ class SparqlModel
   def update( _key, _value )
     urn_check()
     attr?( _key )
-    #-------------------------------------------------------------
+    
     #  Get the value
-    #-------------------------------------------------------------
     if _value == nil
       sval = @sparql.value([ @urn, pred( _key ) ])
       cls = sval.class
       multi = single_or_multi( _key )
-      #-------------------------------------------------------------
+      
       #  String
-      #-------------------------------------------------------------
       if cls == ::String
         if multi == MULTI
           return [ data_value( _key, sval ) ]
         end
         return data_value( _key, sval )
       end
-      #-------------------------------------------------------------
+      
       #  Array
-      #-------------------------------------------------------------
       if cls == ::Array
         out = []
         sval.each do | val |
@@ -373,17 +349,15 @@ class SparqlModel
         end
         return out
       end
-      #-------------------------------------------------------------
+      
       #  Nothing
-      #-------------------------------------------------------------
       if multi == MULTI
         return []
       end
       return nil
     end
-    #-------------------------------------------------------------
+    
     #  Set the value
-    #-------------------------------------------------------------
     attr_type( _key )
     _value = data_value( _key, _value )
     single_check( _key )

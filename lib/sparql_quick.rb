@@ -6,9 +6,8 @@ class SparqlQuick
   def initialize( _endpoint, _prefixes=nil )
     @endpoint = _endpoint
     @prefixes = _prefixes
-    #-------------------------------------------------------------
+    
     #  Grab query and update handles
-    #-------------------------------------------------------------
     @query = handle( 'query' )
     @update = handle( 'update' )
   end
@@ -17,9 +16,8 @@ class SparqlQuick
   # _triple { Array }
   def insert( _triple )
     triple = uris( _triple )
-    #-------------------------------------------------------------
+    
     #  Insert the data
-    #-------------------------------------------------------------
     @update.insert_data( graph( triple ) )
   end
   
@@ -39,9 +37,8 @@ class SparqlQuick
   # Delete a triple or partial triple
   # _triple { Array }
   def delete( _triple )
-    #-------------------------------------------------------------
+    
     #  Safety check
-    #-------------------------------------------------------------
     check_count = 0
     _triple.each do | check |
       if check.class == ::Symbol
@@ -55,14 +52,12 @@ class SparqlQuick
     if check_count == 3
       raise "Did you really want to delete entire database? Argument must contain one URI or literal value."
     end
-    #-------------------------------------------------------------
+    
     #  Check to see what you're deleting
-    #-------------------------------------------------------------
     results = select( _triple )
-    #-------------------------------------------------------------
+    
     #  SPARQL::Client.delete_data can only delete a complete
     #  s,p,o triple.  So we have to fill in the details.
-    #-------------------------------------------------------------
     results.each do | hash |
       toDelete = _triple.clone
       hash.keys.each do | key |
@@ -87,13 +82,11 @@ class SparqlQuick
   # @return { Array }
   def select( _triple )
     triple = uris( _triple )
-    #-------------------------------------------------------------
+    
     #  Grab a SPARQL handle and run the query
-    #-------------------------------------------------------------
     query = @query.select.where( triple )
-    #-------------------------------------------------------------
+    
     #  Build the results object
-    #-------------------------------------------------------------
     results=[]
     query.each_solution.each do | val |
       results.push( val.bindings )
@@ -108,23 +101,20 @@ class SparqlQuick
     if results.length == 0
       return nil
     end
-    #-------------------------------------------------------------
+    
     #  Get the values
-    #-------------------------------------------------------------
     out = []
     results.each do | val |
       out.push( val[:o].to_s )
     end
-    #-------------------------------------------------------------
+    
     #  If only a single value is returned don't return
     #  an array with one element in it.
-    #-------------------------------------------------------------
     if out.length == 1
       return out[0]
     end
-    #-------------------------------------------------------------
+    
     #  Return an array
-    #-------------------------------------------------------------
     return out
   end
   
@@ -154,9 +144,8 @@ class SparqlQuick
   # _side { Symbol }
   # @return { Integer }
   def next_index( _double, _side=:o )
-    #-------------------------------------------------------------
+    
     #  Where's the indexed URNs?
-    #-------------------------------------------------------------
     results = indexed_urns( _double, _side )
     return 1 if results.empty?
     ns = []
@@ -187,27 +176,23 @@ class SparqlQuick
   # _val { String, Symbol, etc... }
   # _return { RDF::URI, RDF::Literal, Symbol }
   def uri( _val )
-    #-------------------------------------------------------------
+    
     #  If it's a symbol get out of there.
-    #-------------------------------------------------------------
     if _val.class == ::Symbol
       return _val
     end
-    #-------------------------------------------------------------
+    
     #  Are you a URI or a literal?
-    #-------------------------------------------------------------
     if _val.class == ::String
-      #-------------------------------------------------------------
+      
       #  URI with no prefix
-      #-------------------------------------------------------------
       first = _val[0]
       last = _val[-1,1]
       if first == "<" && last == ">"
         return RDF::URI( _val.clip )
       end
-      #-------------------------------------------------------------
+      
       #  With prefix
-      #-------------------------------------------------------------
       unless @prefixes == nil
         pre, colon, last = _val.rpartition(':')
         pre = pre.to_sym
