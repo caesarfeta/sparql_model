@@ -2,14 +2,10 @@
 * SparqlModel - Create data models with a SPARQL-queryable triplestore back-end.
 * SparqlQuick - Query a SPARQL endpoint with ease.
 
-
-
 # Requirements
 * Ruby
 * sparql gem
 * Any triplestore that implements RDF, and supports the HTTP and SPARQL prototcols.
-
-
 
 # Pitch
 * Triplestores have become increasingly popular because... 
@@ -39,20 +35,18 @@ Triplestore datamodels can be created and improved upon faster than with relatio
 With a relational database if you wanted to start storing a new cateogry of data you'd have to run an ALTER TABLE statement to create a new column in the right table and then update your model class.
 With a triplestore and SparqlModel you just have to add a single configuration line to your model class.
 
-
-
 # Install
 	git clone http://github.com/caesarfeta/sparql_model
 	cd sparql_model
 	gem build sparql_model.gemspec
 	gem install sparql_model-0.0.0.gem
 
+or run...
 
+	install.sh
 
 # Uninstall
 	gem uninstall sparql_model
-
-
 
 # Create a data model with SparqlModel
 Here's a sample class.
@@ -123,8 +117,6 @@ Add this little chunk of code in your initialize function so the parent SparqlMo
 Now you have a data model.
 Let's do something with it.
 
-
-
 # Using your data model
 Load your model class
 
@@ -171,8 +163,6 @@ Destroy the instance.  Remove any triple where instance is a subject or an objec
 
 If you're running your code on the test fuseki server, you can [ see the RDF triples change on the fly.]( http://localhost:8080/ds/query?query=select+%3Fs+%3Fp+%3Fo%0D%0Awhere+%7B+%3Fs+%3Fp+%3Fo+%7D&output=text&stylesheet= )
 
-
-
 # Using multiple classes together
 Load your classes
 
@@ -198,9 +188,6 @@ Add an image to the collection
 	col.add( :images, img.get('http://localhost/images/photo.jpg') )
 	col.add( :images, img.get('http://localhost/images/photo2.jpg') )
 
-
-
-
 # To run the test suite.
 ## Install fuseki SPARQL server
 	cd /usr/local/sparql_model
@@ -217,8 +204,6 @@ Add an image to the collection
 ## Run the tests
 	cd /usr/local/sparql_model
 	rake
-
-
 
 # Quickie development environment
 	cd /usr/local/sparql_model/lib
