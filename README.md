@@ -38,12 +38,7 @@ With a triplestore and SparqlModel you just have to add a single configuration l
 # Install
 	git clone http://github.com/caesarfeta/sparql_model
 	cd sparql_model
-	gem build sparql_model.gemspec
-	gem install sparql_model-0.0.0.gem
-
-or run...
-
-	install.sh
+  rake install
 
 # Uninstall
 	gem uninstall sparql_model
