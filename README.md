@@ -36,14 +36,11 @@ With a relational database if you wanted to start storing a new cateogry of data
 With a triplestore and SparqlModel you just have to add a single configuration line to your model class.
 
 # Install
+```
 	git clone http://github.com/caesarfeta/sparql_model
 	cd sparql_model
-	gem build sparql_model.gemspec
-	gem install sparql_model-0.0.0.gem
-
-or run...
-
-	install.sh
+  rake install
+```
 
 # Uninstall
 	gem uninstall sparql_model
@@ -189,21 +186,19 @@ Add an image to the collection
 	col.add( :images, img.get('http://localhost/images/photo2.jpg') )
 
 # To run the test suite.
-## Install fuseki SPARQL server
-	cd /usr/local/sparql_model
-	curl -O http://apache.mesi.com.ar//jena/binaries/jena-fuseki-1.0.2-distribution.tar.gz
-	tar xvzf jena-fuseki-1.0.2-distribution.tar.gz
-	ln -s jena-fuseki-1.0.2 fuseki
-	chmod +x fuseki/fuseki-server fuseki/s-**
 
-## Start the fuseki server on port 8080
-	cd fuseki
-	./fuseki-server --update --mem --port=8080 /ds &
-	echo $! > fuseki.pid
+Install a Fuseki server and start it at port 8080
 
-## Run the tests
-	cd /usr/local/sparql_model
-	rake
+```
+  rake server:install
+  rake server:start
+```
+
+Run the tests with
+
+```
+  rake
+```
 
 # Quickie development environment
 	cd /usr/local/sparql_model/lib
