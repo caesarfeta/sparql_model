@@ -1,6 +1,9 @@
 require 'sparql/client'
 class SparqlQuick
   
+  attr_reader :_query
+  attr_reader :_update
+  
   # _endpoint { String }
   # _prefixes { Hash }
   def initialize( _endpoint, _prefixes=nil )
@@ -8,8 +11,8 @@ class SparqlQuick
     @prefixes = _prefixes
     
     #  Grab query and update handles
-    @query = handle( 'query' )
-    @update = handle( 'update' )
+    @_query = handle( 'query' )
+    @_update = handle( 'update' )
   end
   
   # Insert a single triple
@@ -18,7 +21,7 @@ class SparqlQuick
     triple = uris( _triple )
     
     #  Insert the data
-    @update.insert_data( graph( triple ) )
+    @_update.insert_data( graph( triple ) )
   end
   
   # Update a single triple
@@ -84,7 +87,7 @@ class SparqlQuick
     triple = uris( _triple )
     
     #  Grab a SPARQL handle and run the query
-    query = @query.select.where( triple )
+    query = @_query.select.where( triple )
     
     #  Build the results object
     results=[]
@@ -211,7 +214,7 @@ class SparqlQuick
     unless _verify == keyword
       raise "If you really want to empty the database run empty( :#{ keyword } )"
     end
-    @update.clear( :all )
+    @_update.clear( :all )
   end
   
   # _double { Array }
@@ -234,7 +237,7 @@ class SparqlQuick
   # _triple { Array }
   def destroy( _triple )
     triple = uris( _triple )
-    @update.delete_data( graph( triple ) )
+    @_update.delete_data( graph( triple ) )
   end
   
   # Build a RDF::Graph triple

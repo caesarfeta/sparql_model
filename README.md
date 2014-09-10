@@ -17,7 +17,7 @@
 
 Traditional web-applications use relational databases for persistent storage.
 
-* Relation Databases
+* Relational Databases
 	* Popular because...
 		* Retrieve data with keys.
 			* Reliability
@@ -36,11 +36,11 @@ With a relational database if you wanted to start storing a new cateogry of data
 With a triplestore and SparqlModel you just have to add a single configuration line to your model class.
 
 # Install
-```
+
 	git clone http://github.com/caesarfeta/sparql_model
 	cd sparql_model
-  rake install
-```
+	rake install
+
 
 # Uninstall
 	gem uninstall sparql_model
@@ -186,19 +186,14 @@ Add an image to the collection
 	col.add( :images, img.get('http://localhost/images/photo2.jpg') )
 
 # To run the test suite.
-
 Install a Fuseki server and start it at port 8080
 
-```
-  rake server:install
-  rake server:start
-```
+	rake server:install
+	rake server:start
 
 Run the tests with
 
-```
-  rake
-```
+	rake
 
 # Quickie development environment
 	cd /usr/local/sparql_model/lib
@@ -208,4 +203,4 @@ Run the tests with
 Make a change?
 
 	exec($0)
-	load "image.rb"
+	load 'image.rb'
