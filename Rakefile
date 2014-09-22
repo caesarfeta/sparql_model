@@ -15,6 +15,11 @@ FUSEKI_EXE = "fuseki/#{FUSEKI_DIR}/fuseki-server"
 desc "Run tests"
 task :default => :test
 
+desc 'Install sparql_model gem'
+task :install do
+  `gem build sparql_model.gemspec`
+end
+
 namespace :server do
   desc 'Download and install Fuseki'
   task :install do

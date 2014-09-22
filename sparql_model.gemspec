@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]
 
-  s.add_dependency "sparql-client"
+  s.add_dependency( "sparql-client", "~> 1.1" )
 end
