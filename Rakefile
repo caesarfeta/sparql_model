@@ -1,4 +1,3 @@
-require 'bundler/gem_tasks'
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
@@ -18,6 +17,7 @@ task :default => :test
 desc 'Install sparql_model gem'
 task :install do
   `gem build sparql_model.gemspec`
+  `gem install sparql_model-0.0.1.gem`
 end
 
 namespace :server do
